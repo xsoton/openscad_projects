@@ -17,4 +17,23 @@ module p50b1()
 }
 
 rotate(a=[0,45,0])
+translate([0,0,4])
+cylinder(d1=1.3, d2=1.65, h=3.5);
+
+hull()
+{
+	rotate(a=[0,45,0])
+	translate([0,0,4+3.5])
+	cylinder(d1=1.65, d2=2, h=3.5);
+
+	translate([20,0,5])
+	rotate(a=[0,90,0])
+	cylinder(d1=3, d2=5, h=5);
+}
+
+translate([25,0,5])
+rotate(a=[0,90,0])
+cylinder(d=5, h=45);
+
+rotate(a=[0,45,0])
 p50b1();
