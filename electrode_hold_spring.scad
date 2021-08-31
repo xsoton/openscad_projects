@@ -1,5 +1,6 @@
 $fn = 200;
 g = 0.001;
+pg = 0.4; // погрешность принтера
 
 // винты для губок
 sc_d1 =  2.2; // внутренний диаметр
@@ -37,39 +38,57 @@ c_w = 2.54;
 c_l = 5.0;
 c_h = 8.68;
 
-module screw_head()
-{
-	translate([0, 0, -g])
-	cylinder(d=sc_d2, h=sc_h1-sc_h2+2*g);
-	hull()
-	{
-		translate([0, 0, sc_h1-sc_h2])
-		cylinder(d=sc_d2, h=g);
-		translate([0, 0, sc_h1])
-		cylinder(d=sc_d3, h=g);
-	}
-}
+// направляющая
+w_w1 = 28; // ширина
+w_d1 = 2; // толщина стенок
+w_l1 = p1_l1+pg-0.1+2*w_d1; // длина
+w_h1 = 10; // высота
+
+// рейтер СССР
+ru_w1 = 40; // ширина ретера
+ru_l1 = 70; // ширина скамьи
+ru_h1 = 15; // высота ножек
+ru_d1 = 6.0; // толщина верхней стенки
+ru_d2 = 6.0; // толщина боковых стенок
 
 module screw_body()
 {
 	translate([0, 0, -sc_h3])
-	cylinder(d=sc_d1+0.2, h=sc_h3+g);
+	cylinder(d=sc_d1+pg, h=sc_h3+g);
+}
+
+module screw_hat()
+{
+	hull()
+	{
+		translate([0, 0, -g])
+		cylinder(d=sc_d2+pg, h=g);
+		translate([0, 0, sc_h2])
+		cylinder(d=sc_d3+pg, h=g);
+	}
+}
+
+module screw_head()
+{
+	translate([0, 0, -g])
+	cylinder(d=sc_d2+pg, h=sc_h1-sc_h2+2*g);
+	
+	translate([0, 0, sc_h1-sc_h2])
+	screw_hat();
 }
 
 module spring_case()
 {
-	gap = 0.4;
-	
 	rotate([90,0,0])
-	cylinder(d=s_d1+gap, h=s_h1+gap, center=true);
+	cylinder(d=s_d1+pg, h=s_h1+pg, center=true);
 	
 	translate([s_h2, 0, 10/2])
 	rotate([90,0,0])
-	cylinder(d=2.0, h=s_h1+gap, center=true);
+	cylinder(d=2.0, h=s_h1+pg, center=true);
 	
 	translate([s_h2, 0, -10/2])
 	rotate([90,0,0])
-	cylinder(d=2.0, h=s_h1+gap, center=true);
+	cylinder(d=2.0, h=s_h1+pg, center=true);
 }
 
 module plank_fixed()
@@ -181,57 +200,157 @@ module way()
 {
 	difference()
 	{
-		translate([-28+p1_w1, -(p1_l1+4)/2, 0])
-		cube([28+2, p1_l1+4, 10]);
+		cube([w_w1, w_l1, w_h1]);
 		
-		translate([0.5-0.2, -(p1_l1+4)/2 + 2-0.2, -g])
-		cube([p1_w1-0.5+0.4, p1_l1+0.4, 10+2*g]);
-		
-		translate([-28+p1_w1+2, -(p2_l1+4)/2 + 2-0.2, -g])
-		cube([28-p1_w1-2-0.3+g, p1_l1+0.4, 10+2*g]);
+		translate([w_d1, w_d1, -g])
+		cube([w_w1-2*w_d1, w_l1-2*w_d1, w_h1+2*g]);
 	}
 }
 
-module rider()
+module rider_ussr()
 {
-	
-}
-
-//translate([0, 0, p1_l1/2])
-//rotate([-90, 0, 0])
-union()
-{
-	color("red")
-	translate([0, -p1_l1/2, p1_h1])
-	ebox();
-
-	color("yellow")
-	translate([-0.4-0.1, 0, p2_h1+p2_h2+sc_h1])
-	connector();
-
-	color("blue")
-	translate([-p2_w1, -p1_l1/2, p1_h1])
-	cbox();
-
 	difference()
 	{
-		union()
+		cube([ru_w1, ru_l1+2*ru_d2, ru_d1]);
+		
+		translate([ru_w1/2 - p1_w1*1/2, ru_d2 + ru_l1/2, -g])
+		cylinder(d=sc_d2+pg, h=ru_d1+2*g);
+				
+		hull()
 		{
-			color("salmon")
-			plank_fixed();
+			translate([ru_w1/2 - p1_w1*1/2, ru_d2 + ru_l1/2, 1])
+			screw_hat();
 			
-			color("aqua")
-			plank_free();
+			translate([ru_w1/2 - p1_w1*1/2, ru_d2 + ru_l1/2, ru_d1-sc_h2])
+			screw_hat();
 		}
 		
-		translate([0, 0, p2_h2])
-		rotate([0, -90, 0])
-		spring_case();
+		translate([ru_w1/2 + p1_w1*1/2, ru_d2 + ru_l1/2, -g])
+		cylinder(d=sc_d2+pg, h=ru_d1+2*g);
+			
+		hull()
+		{
+			translate([ru_w1/2 + p1_w1*1/2, ru_d2 + ru_l1/2, 1])
+			screw_hat();
+			
+			translate([ru_w1/2 + p1_w1*1/2, ru_d2 + ru_l1/2, ru_d1-sc_h2])
+			screw_hat();
+		}
+	}
+	
+	translate([0, 0, ru_d1])
+	difference()
+	{
+		cube([ru_w1, ru_d2, ru_h1]);
+		
+		translate([ru_w1/2, -g, ru_h1/2])
+		rotate([-90, 0, 0])
+		cylinder(d = 3.0 + pg, h = ru_d2 + 2*g);
+		
+		translate([ru_w1/2, ru_d2-4.0, ru_h1/2])
+		rotate([-90, 0, 0])
+		cylinder(d = 3.7 + pg, h = 4.0 + g);
+	}
+	
+	translate([0, ru_d2+ru_l1, ru_d1])
+	hull()
+	{
+		cube([ru_w1, ru_d2, g]);
+		
+		translate([0, -ru_h1/tan(60+1/4), ru_h1])
+		cube([ru_w1, ru_d2, g]);
 	}
 }
 
-color("green")
-translate([0, 0, p1_h1-20])
-//translate([20, 35, 0])
-//rotate([0, 0, 90])
-way();
+module view()
+{
+	union()
+	{
+		color("red")
+		translate([0, -p1_l1/2, p1_h1])
+		ebox();
+
+		color("yellow")
+		translate([-0.4-0.1, 0, p2_h1+p2_h2+sc_h1])
+		connector();
+
+		color("blue")
+		translate([-p2_w1, -p1_l1/2, p1_h1])
+		cbox();
+
+		difference()
+		{
+			union()
+			{
+				color("salmon")
+				plank_fixed();
+				
+				color("aqua")
+				plank_free();
+			}
+			
+			translate([0, 0, p2_h2])
+			rotate([0, -90, 0])
+			spring_case();
+		}
+	}
+
+	color("green")
+	translate([-w_w1+p1_w1+w_d1, -w_l1/2, p1_h1-20])
+	way();
+	
+	translate([ru_w1/2+p1_w1, -ru_l1/2-ru_d2, 0])
+	rotate([180, 0, 180])
+	rider_ussr();
+}
+
+module print_sla()
+{
+	color("red")
+	translate([1, -p1_l1/2, 0])
+	ebox();
+	
+	color("blue")
+	translate([-p2_w1-1, -p1_l1/2, 0])
+	cbox();
+}
+
+module print_fdm()
+{
+	translate([0, 0, p1_l1/2])
+	rotate([-90, 0, 0])
+	union()
+	{
+		difference()
+		{
+			union()
+			{
+				color("salmon")
+				plank_fixed();
+				
+				color("aqua")
+				plank_free();
+			}
+			
+			translate([0, 0, p2_h2])
+			rotate([0, -90, 0])
+			spring_case();
+		}
+	}
+
+	color("green")
+	translate([25, 13, 0])
+	rotate([0, 0, 90])
+	way();
+	
+	translate([-ru_w1-12, 0, 0])
+	rider_ussr();
+}
+
+
+view();
+*print_sla();
+*print_fdm();
+
+*rider_ussr();
+*way();
