@@ -37,6 +37,7 @@ e_l = 0.5;
 c_w = 2.54;
 c_l = 5.0;
 c_h = 8.68;
+c_g = 0.05;
 
 // направляющая
 w_w1 = 28; // ширина
@@ -162,6 +163,12 @@ module ebox()
 		translate([-g, (p1_l1-e_w+2)/2, sc_h1-g])
 		cube([0.4+2*g, e_w-2, 10-sc_h1+2*g]);
 	}
+	
+	translate([3, 0, 2])
+	cube([p1_w1-3, 1, 10-2]);
+	
+	translate([3, p1_l1-1, 2])
+	cube([p1_w1-3, 1, 10-2]);
 }
 
 module connector()
@@ -188,12 +195,22 @@ module cbox()
 		translate([p2_w1-4, 0, sc_h1])
 		cube([4, p1_l1, 10-sc_h1]);
 		
-		translate([p2_w1-c_w-0.2-0.4, (p2_l1-c_l-0.2)/2, sc_h1-g])
-		cube([c_w+0.2, c_l+0.2, 10-sc_h1+2*g]);
+		translate([p2_w1-c_w-2*c_g-0.4, (p2_l1-c_l-2*c_g)/2, sc_h1-g])
+		cube([c_w+2*c_g, c_l+2*c_g, 10-sc_h1+2*g]);
 		
 		translate([p2_w1-4-g, (p2_l1-c_l+1)/2, sc_h1-g])
 		cube([4+2*g, c_l-1, 10-sc_h1+2*g]);
 	}
+	
+	translate([0, -0.1, 0])
+	cube([p1_w1, 0.1, 10]);
+	translate([0, -1, 0])
+	cube([2*p1_w1, 0.9, 10]);
+	
+	translate([0, p2_l1, 0])
+	cube([p1_w1, 0.1, 10]);
+	translate([0, p2_l1+0.1, 0])
+	cube([2*p1_w1, 0.9, 10]);
 }
 
 module way()
@@ -307,11 +324,11 @@ module view()
 module print_sla()
 {
 	color("red")
-	translate([1, -p1_l1/2, 0])
+	translate([5, -p1_l1/2, 0])
 	ebox();
 	
 	color("blue")
-	translate([-p2_w1-1, -p1_l1/2, 0])
+	translate([-p2_w1-10, -p1_l1/2, 0])
 	cbox();
 }
 
@@ -347,8 +364,15 @@ module print_fdm()
 	rider_ussr();
 }
 
+*color("red")
+ebox();
+
+*color("blue")
+translate([-10, 0, 0])
+cbox();
 
 view();
+*view2();
 *print_sla();
 *print_fdm();
 
