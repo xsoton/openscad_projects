@@ -5,9 +5,11 @@ pg = 0.4; // погрешность принтера
 // рейтер СССР
 ru_w1 = 50; // ширина ретера
 ru_l1 = 70; // ширина скамьи
-ru_h1 = 15; // высота ножек
-ru_d1 = 6.0+5.0;// толщина верхней стенки
-ru_d2 = 6.0; // толщина боковых стенок
+ru_h1 = 20; // высота ножек
+ru_d1 = 6.0+5+30;// толщина верхней стенки
+ru_d2 = 12; // толщина боковых стенок
+
+ru_h2 = 5+30;
 
 sx = 25.4;
 sy = 0.75*25.4;
@@ -63,12 +65,106 @@ module screw_head()
 	translate([0, 0, sc_h1-sc_h2])
 	screw_hat();
 }
+module screw_head2(h)
+{
+	hull()
+	{
+		screw_head();
+		translate([0,0,h])
+		screw_head();
+	}
+}
+
+module ruder_top()
+{
+	difference()
+	{
+		translate([0, ru_d2+ru_l1/2-sy/2-10, 0])
+		cube([ru_w1, sy+20, ru_d1-6]);
+		
+		translate([5, ru_d2+ru_l1/2+sy/2+5, ru_d1-6])
+		screw_body();
+		
+		translate([5, ru_d2+ru_l1/2-sy/2-5, ru_d1-6])
+		screw_body();
+		
+		translate([ru_w1-5, ru_d2+ru_l1/2+sy/2+5, ru_d1-6])
+		screw_body();
+		
+		translate([ru_w1-5, ru_d2+ru_l1/2-sy/2-5, ru_d1-6])
+		screw_body();
+		
+		translate([ru_w1/2 - sx/2, ru_d2 + ru_l1/2 - sy/2, ru_d1])
+		rotate([180, 0, 0])
+		sc1();
+		
+		translate([ru_w1/2 - sx/2, ru_d2 + ru_l1/2 + sy/2, ru_d1])
+		rotate([180, 0, 0])
+		sc1();
+		
+		translate([ru_w1/2 + sx/2, ru_d2 + ru_l1/2 - sy/2, ru_d1])
+		rotate([180, 0, 0])
+		sc1();
+		
+		translate([ru_w1/2 + sx/2, ru_d2 + ru_l1/2 + sy/2, ru_d1])
+		rotate([180, 0, 0])
+		sc1();
+	}
+}
 
 module rider_ussr()
 {
 	difference()
 	{
-		cube([ru_w1, ru_l1+2*ru_d2, ru_d1]);
+		union()
+		{
+			difference()
+			{
+				cube([ru_w1, ru_l1+2*ru_d2, ru_d1]);
+				
+				translate([-g,-g,-g])
+				cube([ru_w1+2*g, ru_l1+2*ru_d2+2*g, ru_d1-6+g]);
+			}
+			
+			/*
+			translate([0, ru_d2+ru_l1/2-sy/2-10, 0])
+			cube([ru_w1, sy+20, ru_d1-6]);
+			*/
+			
+			/*
+			translate([ru_w1/2 - sx/2, ru_d2 + ru_l1/2 - sy/2, 0])
+			cylinder(d = sc_d3+5, h = ru_d1);
+			
+			translate([ru_w1/2 - sx/2, ru_d2 + ru_l1/2 + sy/2, 0])
+			cylinder(d = sc_d3+5, h = ru_d1);
+			
+			translate([ru_w1/2 + sx/2, ru_d2 + ru_l1/2 - sy/2, 0])
+			cylinder(d = sc_d3+5, h = ru_d1);
+			
+			translate([ru_w1/2 + sx/2, ru_d2 + ru_l1/2 + sy/2, 0])
+			cylinder(d = sc_d3+5, h = ru_d1);
+			*/
+		}
+		
+		/*
+		translate([-g,-g,-g])
+		cube([ru_w1+2*g, ru_d2+ru_l1/2-sy/2-10+g, ru_d1-6.0+g]);
+		
+		translate([-g, ru_l1+2*ru_d2-(ru_d2+ru_l1/2-sy/2-10), -g])
+		cube([ru_w1+2*g, ru_d2+ru_l1/2-sy/2-10+g, ru_d1-6.0+g]);
+		*/
+		
+		translate([5, ru_d2+ru_l1/2+sy/2+5, ru_d1-6])
+		screw_head2(6);
+		
+		translate([5, ru_d2+ru_l1/2-sy/2-5, ru_d1-6])
+		screw_head2(6);
+		
+		translate([ru_w1-5, ru_d2+ru_l1/2+sy/2+5, ru_d1-6])
+		screw_head2(6);
+		
+		translate([ru_w1-5, ru_d2+ru_l1/2-sy/2-5, ru_d1-6])
+		screw_head2(6);
 		
 		translate([ru_w1/2 - sx/2, ru_d2 + ru_l1/2 - sy/2, ru_d1])
 		rotate([180, 0, 0])
@@ -94,11 +190,15 @@ module rider_ussr()
 		
 		translate([ru_w1/2, -g, ru_h1/2])
 		rotate([-90, 0, 0])
-		cylinder(d = 3.0 + pg, h = ru_d2 + 2*g);
+		cylinder(d = 6.0 + pg, h = ru_d2 + 2*g);
 		
-		translate([ru_w1/2, ru_d2-4.0, ru_h1/2])
+		translate([ru_w1/2, ru_d2-5.0, ru_h1/2])
 		rotate([-90, 0, 0])
-		cylinder(d = 3.7 + pg, h = 4.0 + g);
+		cylinder(d = 11.2 + pg, h = 5.0 + g, $fn = 6);
+		
+		translate([ru_w1/2, -g, ru_h1/2])
+		rotate([-90, 0, 0])
+		cylinder(d = 11.2 + pg, h = 5.0 + g, $fn = 6);
 	}
 	
 	translate([0, ru_d2+ru_l1, ru_d1])
@@ -111,14 +211,62 @@ module rider_ussr()
 	}
 }
 
+module cap1()
+{
+	difference()
+	{
+		cylinder(d = ru_h1, h = 10);
+		
+		for(a = [0:30:360-30])
+		rotate([0, 0, a])
+		translate([ru_h1/2, 0, -g])
+		cylinder(d = ru_h1/10, h = 10+2*g);
+		
+		translate([0, 0, -g])
+		cylinder(d = 6.0 + pg, h = 10 - 5 + 2*g);
+		
+		translate([0, 0, 10-5])
+		cylinder(d = 11.2, h = 5 + g, $fn = 6);
+	}
+}
+
+module cap2()
+{
+	difference()
+	{
+		intersection()
+		{
+			sphere(d = 15);
+			cylinder(d = 7.5, h = ru_h1);
+		}
+		
+		translate([-ru_h1, -ru_h1, -ru_h1])
+		cube([2*ru_h1, 2*ru_h1, ru_h1]);
+		
+		translate([0, 0, -g])
+		cylinder(d = 5.5, h = 5 + g);
+	}
+}
+
 module view()
 {
+	translate([-ru_w1-5, 0, -ru_d1+6])
+	//rotate([0, 180, 0])
 	rider_ussr();
+	
+	translate([5, 0, 0])
+	ruder_top();
+	
+	//translate([-25, 25, 0])
+	//cap1();
+	
+	//translate([-ru_w1/2, ru_l1/2+ru_d2, 0])
+	//cap2();
 }
 
 module print_fdm()
 {
-	rider_ussr();
+	view();
 }
 
 view();

@@ -19,19 +19,24 @@ s_dx =  9.5; // максимальная ширина прищепки
 // прищепка - основа
 p1_w1 = 10;
 p1_l1 = s_dx;
-p1_h1 = 90;
+p1_h1 = 90+30;
 
 // прицепка - дополнительная часть
 p2_w1 = 10;
 p2_w2 = 2;
 p2_l1 = s_dx;
 p2_h1 = 40;
-p2_h2 = 50;
+p2_h2 = 50+30;
 
 // электрод
 e_w = 7.66;
 e_h = 23.1;
 e_l = 0.5;
+
+// электрод 2
+e2_w = 7.62;
+e2_h = 16;
+e2_l = 0.5;
 
 // контакт
 c_w = 2.54;
@@ -48,9 +53,9 @@ w_h1 = 10; // высота
 // рейтер СССР
 ru_w1 = 40; // ширина ретера
 ru_l1 = 70; // ширина скамьи
-ru_h1 = 15; // высота ножек
+ru_h1 = 20; // высота ножек
 ru_d1 = 6.0; // толщина верхней стенки
-ru_d2 = 6.0; // толщина боковых стенок
+ru_d2 = 12.0; // толщина боковых стенок
 
 module screw_body()
 {
@@ -171,6 +176,35 @@ module ebox()
 	cube([p1_w1-3, 1, 10-2]);
 }
 
+module ebox2()
+{
+	difference()
+	{
+		cube([p1_w1, p1_l1, sc_h1]);
+		
+		translate([p1_w1-4, p1_l1/2, 0])
+		screw_head();
+	}
+	
+	difference()
+	{
+		translate([0, 0, sc_h1])
+		cube([3, p1_l1, 10-sc_h1]);
+		
+		translate([0.4, (p1_l1-e2_w-0.2)/2, 10-3.5-g])
+		cube([e2_l+0.2, e2_w+0.2, 3.5+2*g]);
+		
+		translate([-g, (p1_l1-e2_w+2)/2, 10-3.5-g])
+		cube([0.4+2*g, e2_w-2, 3.5+2*g]);
+	}
+	
+	translate([3, 0, 2])
+	cube([p1_w1-3, 1, 10-2]);
+	
+	translate([3, p1_l1-1, 2])
+	cube([p1_w1-3, 1, 10-2]);
+}
+
 module connector()
 {
 	translate([-2.54, 0, 0])
@@ -262,11 +296,15 @@ module rider_ussr()
 		
 		translate([ru_w1/2, -g, ru_h1/2])
 		rotate([-90, 0, 0])
-		cylinder(d = 3.0 + pg, h = ru_d2 + 2*g);
+		cylinder(d = 6.0 + pg, h = ru_d2 + 2*g);
 		
-		translate([ru_w1/2, ru_d2-4.0, ru_h1/2])
+		translate([ru_w1/2, ru_d2-5.0, ru_h1/2])
 		rotate([-90, 0, 0])
-		cylinder(d = 3.7 + pg, h = 4.0 + g);
+		cylinder(d = 11.2 + pg, h = 5.0 + g, $fn = 6);
+		
+		translate([ru_w1/2, -g, ru_h1/2])
+		rotate([-90, 0, 0])
+		cylinder(d = 11.2 + pg, h = 5.0 + g, $fn = 6);
 	}
 	
 	translate([0, ru_d2+ru_l1, ru_d1])
@@ -276,6 +314,43 @@ module rider_ussr()
 		
 		translate([0, -ru_h1/tan(60+1/4), ru_h1])
 		cube([ru_w1, ru_d2, g]);
+	}
+}
+
+module cap1()
+{
+	difference()
+	{
+		cylinder(d = ru_h1, h = 10);
+		
+		for(a = [0:30:360-30])
+		rotate([0, 0, a])
+		translate([ru_h1/2, 0, -g])
+		cylinder(d = ru_h1/10, h = 10+2*g);
+		
+		translate([0, 0, -g])
+		cylinder(d = 6.0 + pg, h = 10 - 5 + 2*g);
+		
+		translate([0, 0, 10-5])
+		cylinder(d = 11.2, h = 5 + g, $fn = 6);
+	}
+}
+
+module cap2()
+{
+	difference()
+	{
+		intersection()
+		{
+			sphere(d = 15);
+			cylinder(d = 7.5, h = ru_h1);
+		}
+		
+		translate([-ru_h1, -ru_h1, -ru_h1])
+		cube([2*ru_h1, 2*ru_h1, ru_h1]);
+		
+		translate([0, 0, -g])
+		cylinder(d = 5.5, h = 5 + g);
 	}
 }
 
@@ -332,6 +407,12 @@ module print_sla()
 	cbox();
 }
 
+module print_sla2()
+{
+	color("red")
+	ebox2();
+}
+
 module print_fdm()
 {
 	translate([0, 0, p1_l1/2])
@@ -362,6 +443,12 @@ module print_fdm()
 	
 	translate([-ru_w1-12, 0, 0])
 	rider_ussr();
+	
+	translate([22, 55, 0])
+	cap1();
+	
+	translate([17, 72, 0])
+	cap2();
 }
 
 *color("red")
@@ -371,9 +458,9 @@ ebox();
 translate([-10, 0, 0])
 cbox();
 
-view();
-*view2();
+*view();
 *print_sla();
+print_sla2();
 *print_fdm();
 
 *rider_ussr();
