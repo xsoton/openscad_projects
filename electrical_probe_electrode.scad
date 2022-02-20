@@ -9,9 +9,14 @@ module p50b1()
 	h1 = 3.35;
 	h2 = 13;
 	
-	cylinder(d1=0, d2=d1, h=h0);
-	translate([0,0,h0])
-	cylinder(d=d1, h=h1-h0);
+	color("Silver")
+	{
+		cylinder(d1=0, d2=d1, h=h0);
+		translate([0,0,h0])
+		cylinder(d=d1, h=h1-h0);
+	}
+
+	color("Gold")
 	translate([0,0,h1])
 	cylinder(d=d2, h=h2);
 }

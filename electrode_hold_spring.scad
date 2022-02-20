@@ -180,29 +180,35 @@ module ebox2()
 {
 	difference()
 	{
-		cube([p1_w1, p1_l1, sc_h1]);
+		cube([p1_w1, p1_l1, 2*sc_h1]);
 		
-		translate([p1_w1-4, p1_l1/2, 0])
-		screw_head();
+		hull()
+		{
+			translate([p1_w1-4, p2_l1/2, 0])
+			screw_head();
+
+			translate([p1_w1-4, p2_l1/2, sc_h1])
+			screw_head();
+		}
 	}
 	
 	difference()
 	{
-		translate([0, 0, sc_h1])
-		cube([3, p1_l1, 10-sc_h1]);
+		translate([0, 0, 2*sc_h1])
+		cube([3, p1_l1, c_h]);
 		
-		translate([0.4, (p1_l1-e2_w-0.2)/2, 10-3.5-g])
+		translate([0.4, (p1_l1-e2_w-0.2)/2, 2*sc_h1+c_h-3.5-g])
 		cube([e2_l+0.2, e2_w+0.2, 3.5+2*g]);
 		
-		translate([-g, (p1_l1-e2_w+2)/2, 10-3.5-g])
+		translate([-g, (p1_l1-e2_w+2)/2, 2*sc_h1+c_h-3.5-g])
 		cube([0.4+2*g, e2_w-2, 3.5+2*g]);
 	}
 	
 	translate([3, 0, 2])
-	cube([p1_w1-3, 1, 10-2]);
+	cube([p1_w1-3, 1, 2*sc_h1+c_h-2]);
 	
 	translate([3, p1_l1-1, 2])
-	cube([p1_w1-3, 1, 10-2]);
+	cube([p1_w1-3, 1, 2*sc_h1+c_h-2]);
 }
 
 module connector()
@@ -218,7 +224,7 @@ module cbox()
 {
 	difference()
 	{
-		cube([p2_w1, p2_l1, sc_h1]);
+		cube([p2_w1, p2_l1, 2*sc_h1]);
 		
 		translate([4, p2_l1/2, 0])
 		screw_head();
@@ -245,6 +251,45 @@ module cbox()
 	cube([p1_w1, 0.1, 10]);
 	translate([0, p2_l1+0.1, 0])
 	cube([2*p1_w1, 0.9, 10]);
+}
+
+module cbox2()
+{
+	difference()
+	{
+		cube([p2_w1, p2_l1, 2*sc_h1]);
+
+		hull()
+		{
+			translate([4, p2_l1/2, 0])
+			screw_head();
+
+			translate([4, p2_l1/2, sc_h1])
+			screw_head();
+		}
+	}
+
+	difference()
+	{
+		translate([p2_w1-4, 0, 2*sc_h1])
+		cube([4, p1_l1, c_h]);
+
+		translate([p2_w1-c_w-2*c_g-0.4, (p2_l1-c_l-2*c_g)/2, 2*sc_h1-g])
+		cube([c_w+2*c_g, c_l+2*c_g, c_h+2*g]);
+
+		translate([p2_w1-4-g, (p2_l1-c_l+1)/2, 2*sc_h1-g])
+		cube([4+2*g, c_l-1, c_h+2*g]);
+	}
+
+	translate([0, -0.1, 0])
+	cube([p1_w1, 0.1, 2*sc_h1+c_h]);
+	translate([0, -1, 0])
+	cube([2*p1_w1, 0.9, 2*sc_h1+c_h]);
+
+	translate([0, p2_l1, 0])
+	cube([p1_w1, 0.1, 2*sc_h1+c_h]);
+	translate([0, p2_l1+0.1, 0])
+	cube([2*p1_w1, 0.9, 2*sc_h1+c_h]);
 }
 
 module way()
@@ -410,7 +455,18 @@ module print_sla()
 module print_sla2()
 {
 	color("red")
+	translate([5, -p1_l1/2, 0])
 	ebox2();
+
+	color("blue")
+	translate([-p2_w1-10, -p1_l1/2, 0])
+	cbox2();
+
+	*color("yellow")
+	translate([0, 0, 2*sc_h1+c_h])
+	rotate([180, 0, 0])
+	translate([-10-0.4-0.1, 0, 0])
+	connector();
 }
 
 module print_fdm()
