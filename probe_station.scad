@@ -270,4 +270,4 @@ union()
 
 translate([+3*W0/2, -L0/2, 1+H0+1])
 mirror([1, 0, 0])
-!probe_holder_table();
+probe_holder_table();
