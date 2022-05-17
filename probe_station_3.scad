@@ -21,8 +21,8 @@ M3Nl =  3.00;
 module screw(D, L, Dk, K)
 {
 	screw_hat(D, Dk, K);
-	translate([0, 0, K])
-	screw_body(D, L);
+	translate([0, 0, K-0.001])
+	screw_body(D, L+0.001);
 }
 module screw_hat (D, Dk, K) {cylinder(d1 = Dk, d2 = D, h = K       );}
 module screw_body(D, L)     {cylinder(d  = D ,         h = L       );}
@@ -62,7 +62,7 @@ module electrode()
 }
 
 PH_L = 50;
-PH_H = 7;
+PH_H = 4;
 PH_W = 7;
 
 module probe_holder()
@@ -84,6 +84,8 @@ module probe_holder()
 	D2 =  1.65;
 	D3 =  2.00;
 
+	S = (H1+2*H2)*cos(A)+(D3/2)*sin(A);
+
 	difference()
 	{
 		union()
@@ -104,19 +106,34 @@ module probe_holder()
 					translate([0, 0, H1 + 2*H2])
 					cylinder(d = D3, h = H2);
 
-					translate([0, -W/2, (H1+2*H2)*cos(A)+(D3/2)*sin(A)-H])
+					translate([0, -W/2, S-H])
 					cube([L, W, H]);
 				}
 
-				translate([L1-g, -W/2, (H1+2*H2)*cos(A)+(D3/2)*sin(A)-H])
+				*translate([L1-g, -W/2, S-H])
 				cube([g, W, H]);
+
+				translate([L1, -W/2, S-H])
+				cube([L-L1, W, H]);
 			}
 
-			translate([L1, -W/2, (H1+2*H2)*cos(A)+(D3/2)*sin(A)-H])
+			translate([L1, -W/2, S-H])
 			cube([L-L1, W, H]);
 
-			translate([L-3, -W/2, 0])
-			cube([3, W, H]);
+			*translate([L-3, -W/2, 0])
+			cube([3, W, S]);
+
+			translate([L-H/2, -W/2, 0])
+			hull()
+			{
+				translate([0, 0, H/2])
+				rotate([-90, 0, 0])
+				cylinder(d = H, h = W);
+
+				translate([0, 0, S-H/2])
+				rotate([-90, 0, 0])
+				cylinder(d = H, h = W);
+			}
 		}
 
 		union()
@@ -126,11 +143,11 @@ module probe_holder()
 
 			hull()
 			{
-				translate([L1, 0, (H1+2*H2)*cos(A)+(D3/2)*sin(A)-H-g])
-				cylinder(d = 3.5, h = H + 2*g);
+				translate([L1, 0, -g])
+				cylinder(d = 3.5, h = S + 2*g);
 
-				translate([L-5, 0, (H1+2*H2)*cos(A)+(D3/2)*sin(A)-H-g])
-				cylinder(d = 3.5, h = H + 2*g);
+				translate([L-5, 0, -g])
+				cylinder(d = 3.5, h = S + 2*g);
 			}
 
 			rotate([0, A, 0])
@@ -147,15 +164,19 @@ module probe_holder()
 	}
 }
 
+T_W = 90;
+T_L = 90;
+T_H = 5;
+
 module table()
 {
-	W0 = 90;
-	L0 = 90;
-	H0 = 5;
+	W0 = T_W;
+	L0 = T_L;
+	H0 = T_H;
 
-	W1 = 30;
-	L1 = 30;
-	H1 = 1;
+	W1 = 20;
+	L1 = 25;
+	H1 = 2;
 
 	S1 = 10;
 	S2 = 5;
@@ -169,8 +190,8 @@ module table()
 		translate([(W0-W1)/2, L0-L1, H0-H1])
 		cube([W1, L1+g, H1+g]);
 
-		for(i = [1:1:8])
-		for(j = [1:1:5])
+		for(i = [2:1:7])
+		for(j = [3:1:6])
 		{
 			x = i * S1;
 			y = j * S1;
@@ -178,43 +199,153 @@ module table()
 			cylinder(d = 4.2, h = H0 + 2*g);
 		}
 
-		for(i = [1:1:2])
-		for(j = [1:1:3])
+		for(i = [2:1:3])
+		for(j = [7:1:8])
 		{
 			x = i * S1;
-			y = j * S1 + 5 * S1;
+			y = j * S1;
 			translate([x, y, -g])
 			cylinder(d = 4.2, h = H0 + 2*g);
 		}
 
-		for(i = [1:1:2])
-		for(j = [1:1:3])
+		for(i = [6:1:7])
+		for(j = [7:1:8])
 		{
-			x = i * S1 + 6 * S1;
-			y = j * S1 + 5 * S1;
+			x = i * S1;
+			y = j * S1;
 			translate([x, y, -g])
-			cylinder(d = 4.0, h = H0 + 2*g);
+			cylinder(d = 4.2, h = H0 + 2*g);
 		}
 
-		for(i = [1:1:5])
-		for(j = [1:1:5])
+		for(i = [2:1:4])
+		for(j = [2:1:5])
 		{
 			x = i * S2 + 3 * S1;
 			y = j * S2 + 6 * S1;
 			translate([x, y, (H0-H1)/2])
 			cube([4.2, 4.2, (H0-H1) + 2*g], center = true);
 		}
+
+		for(i = [0:1:1])
+		for(j = [0:1:1])
+		{
+			x = i * (W0-10) + 5;
+			y = j * (L0-10) + 5;
+
+			translate([x, y, -g])
+			screw(M3D+0.5, H0 + 2*g, M3Dk+0.5, M3K);
+
+			translate([x, y, H0+g])
+			rotate([180, 0, 0])
+			screw(M3D+0.5, H0 + 2*g, M3Dk+0.5, M3K);
+		}
 	}
 }
 
-*probe_holder();
+module box()
+{
+	W = 100;
+	L = 130;
+	H = 35.0;
 
-*rotate([0, 30, 0])
-probe();
+	Wi = T_W + 1.0;
+	Li = T_L + 1.0;
+	Hi = T_H + 30.0;
+
+	D01 = 10.70 + 0.50;
+
+	D11 =  9.20 + 0.50;
+	D12 = 12.40 + 0.50;
+	H12 =  1.55;
+
+	D21 =  6.00 + 0.50;
+	D22 = 12.00 + 2.00;
+	H22 =  3.65;
+
+
+	difference()
+	{
+		cube([W, L, H]);
+
+		translate([3, 3, -g])
+		cube([W - 6, L - 6, H + 2*g]);
+
+
+		translate([W/2-10, 1.5, H/2]) rotate([-90,90,0]) screw_nut (M3Nd+0.4, M3Nl+  g);
+		translate([W/2-10,  -g, H/2]) rotate([-90, 0,0]) screw_body(M3D +0.4,    3+2*g);
+		translate([W/2+10, 1.5, H/2]) rotate([-90,90,0]) screw_nut (M3Nd+0.4, M3Nl+  g);
+		translate([W/2+10,  -g, H/2]) rotate([-90, 0,0]) screw_body(M3D +0.4,    3+2*g);
+	}
+
+	difference()
+	{
+		cube([W, L, 5]);
+
+		translate([15, 15,      -g]) cylinder(d = D01, h =   5 + 2*g);
+		translate([35, 15,      -g]) cylinder(d = D01, h =   5 + 2*g);
+		translate([55, 15,      -g]) cylinder(d = D11, h =   5 + 2*g);
+		translate([55, 15,      -g]) cylinder(d = D12, h = H12 +   g);
+		translate([80, 15,      -g]) cylinder(d = D21, h =   5 + 2*g);
+		translate([80, 15, 5 - H22]) cylinder(d = D22, h = H22 +   g);
+	}
+
+	difference()
+	{
+		union()
+		{
+			translate([   0, L-95, 0]) cube([15, 10, H-5]);
+			translate([   0, L-15, 0]) cube([15, 15, H-5]);
+			translate([W-15, L-95, 0]) cube([15, 10, H-5]);
+			translate([W-15, L-15, 0]) cube([15, 15, H-5]);
+		}
+
+		union()
+		{
+			translate([ +10, L-10, H-10-5]) cylinder(d = 4.2, h = 10 + g);
+			translate([W-10, L-10, H-10-5]) cylinder(d = 4.2, h = 10 + g);
+			translate([ +10, L-90, H-10-5]) cylinder(d = 4.2, h = 10 + g);
+			translate([W-10, L-90, H-10-5]) cylinder(d = 4.2, h = 10 + g);
+		}
+	}
+
+	translate([   0, L-95-3.2, 0]) cube([13, 1.2, H-5]);
+	translate([W-13, L-95-3.2, 0]) cube([13, 1.2, H-5]);
+
+	translate([    0, L-95-2, 0]) cube([5+3, 2, H-5]);
+	translate([W-5-3, L-95-2, 0]) cube([5+3, 2, H-5]);
+}
+
+//color("red")
+translate([50, 65+5, 5])
+rotate([0, 0, -90])
+{
+	probe_holder();
+
+	rotate([0, 30, 0])
+	probe();
+}
+
+//color("red")
+translate([40, 65+5, 5])
+rotate([0, 0, -90])
+{
+	probe_holder();
+
+	rotate([0, 30, 0])
+	probe();
+}
 
 table();
 
+color("Silver")
+{
+	translate([40, 40, +M3K + 25]) rotate([180, 0, 0]) screw(M3D, 25, M3Dk, M3K);
+	translate([50, 40, +M3K + 25]) rotate([180, 0, 0]) screw(M3D, 25, M3Dk, M3K);
+	translate([50, 50, -M3K - 20])                     screw(M3D, 25, M3Dk, M3K);
+}
 
+translate([-5, -35, -30])
+!box();
 
 
 
