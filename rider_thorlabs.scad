@@ -120,7 +120,7 @@ module rider_ussr()
 		{
 			difference()
 			{
-				cube([ru_w1, ru_l1+2*ru_d2, ru_d1]);
+				#cube([ru_w1, ru_l1+2*ru_d2, ru_d1]);
 				
 				translate([-g,-g,-g])
 				cube([ru_w1+2*g, ru_l1+2*ru_d2+2*g, ru_d1-6+g]);
@@ -254,8 +254,8 @@ module view()
 	//rotate([0, 180, 0])
 	rider_ussr();
 	
-	translate([5, 0, 0])
-	ruder_top();
+	// translate([5, 0, 0])
+	// ruder_top();
 	
 	//translate([-25, 25, 0])
 	//cap1();
