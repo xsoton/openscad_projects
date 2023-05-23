@@ -152,6 +152,97 @@ module probe_holder()
 	}
 }
 
+module probe_holder2()
+{
+	A = 30;
+
+	L = PH_L;
+	H = PH_H;
+	W = PH_W;
+
+	L1 = L/2;
+
+	W1 = 10.00;
+
+	H1 =  4.00;
+	H2 =  3.50;
+
+	D1 =  1.30;
+	D2 =  1.65;
+	D3 =  2.00;
+
+	S = (H1+2*H2)*cos(A)+(D3/2)*sin(A);
+
+	difference()
+	{
+		union()
+		{
+			rotate([0, A, 0])
+			translate([0, 0, H1])
+			cylinder(d1 = D1, d2 = D2, h = H2);
+
+			hull()
+			{
+				rotate([0, A, 0])
+				translate([0, 0, H1 + H2])
+				cylinder(d1 = D2, d2 = D3, h = H2);
+
+				intersection()
+				{
+					rotate([0, A, 0])
+					translate([0, 0, H1 + 2*H2])
+					cylinder(d = D3, h = H2);
+
+					translate([0, -W/2, S-H])
+					cube([L, W, H]);
+				}
+
+				translate([L1, -W/2, S-H])
+				cube([L-L1, W, H]);
+			}
+
+			translate([L1, -W/2, S-H])
+			cube([L-L1, W, H]);
+
+			translate([L-H/2, -W/2, 0])
+			hull()
+			{
+				translate([0, 0, H/2])
+				rotate([-90, 0, 0])
+				cylinder(d = H, h = W);
+
+				translate([0, 0, S-H/2])
+				rotate([-90, 0, 0])
+				cylinder(d = H, h = W);
+			}
+		}
+
+		union()
+		{
+			rotate([0, A, 0])
+			cylinder(d = PD2 + 4*G, h = PH1 + PH2);
+
+			hull()
+			{
+				translate([L1-1, 0, -g])
+				cylinder(d = 3.5, h = S + 2*g);
+
+				translate([L-5, 0, -g])
+				cylinder(d = 3.5, h = S + 2*g);
+			}
+
+			*rotate([0, A, 0])
+			translate([0, 0, H1+2*H2])
+			cylinder(d1 = PD2 + 4*G, d2 = 2.5, h = 1.35);
+
+			translate([0, 0, 5.3])
+			rotate([0, 45+10, 0])
+			translate([-11, -5, 0])
+			cube([11, 11, 11]);
+		}
+	}
+}
+
 T_W = 130;
 T_L = 130;
 T_H = 5;
@@ -482,8 +573,9 @@ module view()
 *box();
 *cover();
 *table();
-rider_ussr();
+*rider_ussr();
 *cap1();
 *probe_holder();
+probe_holder2();
 
 
