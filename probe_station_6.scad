@@ -12,6 +12,10 @@ M3L  = 50.00-M3K;
 M3Nd =  5.50/cos(30);
 M3Nl =  3.00;
 
+// гайка M2
+M2Nd =  4.00/cos(30);
+M2Nl =  1.60;
+
 /*
  * Винт
  * D  - диаметр резьбы
@@ -66,182 +70,182 @@ PH_L = 50;
 PH_H = 4;
 PH_W = 7;
 
-module probe_holder()
-{
-	A = 30;
+// module probe_holder()
+// {
+// 	A = 30;
 
-	L = PH_L;
-	H = PH_H;
-	W = PH_W;
+// 	L = PH_L;
+// 	H = PH_H;
+// 	W = PH_W;
 
-	L1 = L/2;
+// 	L1 = L/2;
 
-	W1 = 10.00;
+// 	W1 = 10.00;
 
-	H1 =  4.00;
-	H2 =  3.50;
+// 	H1 =  4.00;
+// 	H2 =  3.50;
 
-	D1 =  1.30;
-	D2 =  1.65;
-	D3 =  2.00;
+// 	D1 =  1.30;
+// 	D2 =  1.65;
+// 	D3 =  2.00;
 
-	S = (H1+2*H2)*cos(A)+(D3/2)*sin(A);
+// 	S = (H1+2*H2)*cos(A)+(D3/2)*sin(A);
 
-	difference()
-	{
-		union()
-		{
-			rotate([0, A, 0])
-			translate([0, 0, H1])
-			cylinder(d1 = D1, d2 = D2, h = H2);
+// 	difference()
+// 	{
+// 		union()
+// 		{
+// 			rotate([0, A, 0])
+// 			translate([0, 0, H1])
+// 			cylinder(d1 = D1, d2 = D2, h = H2);
 
-			hull()
-			{
-				rotate([0, A, 0])
-				translate([0, 0, H1 + H2])
-				cylinder(d1 = D2, d2 = D3, h = H2);
+// 			hull()
+// 			{
+// 				rotate([0, A, 0])
+// 				translate([0, 0, H1 + H2])
+// 				cylinder(d1 = D2, d2 = D3, h = H2);
 
-				intersection()
-				{
-					rotate([0, A, 0])
-					translate([0, 0, H1 + 2*H2])
-					cylinder(d = D3, h = H2);
+// 				intersection()
+// 				{
+// 					rotate([0, A, 0])
+// 					translate([0, 0, H1 + 2*H2])
+// 					cylinder(d = D3, h = H2);
 
-					translate([0, -W/2, S-H])
-					cube([L, W, H]);
-				}
+// 					translate([0, -W/2, S-H])
+// 					cube([L, W, H]);
+// 				}
 
-				translate([L1, -W/2, S-H])
-				cube([L-L1, W, H]);
-			}
+// 				translate([L1, -W/2, S-H])
+// 				cube([L-L1, W, H]);
+// 			}
 
-			translate([L1, -W/2, S-H])
-			cube([L-L1, W, H]);
+// 			translate([L1, -W/2, S-H])
+// 			cube([L-L1, W, H]);
 
-			translate([L-H/2, -W/2, 0])
-			hull()
-			{
-				translate([0, 0, H/2])
-				rotate([-90, 0, 0])
-				cylinder(d = H, h = W);
+// 			translate([L-H/2, -W/2, 0])
+// 			hull()
+// 			{
+// 				translate([0, 0, H/2])
+// 				rotate([-90, 0, 0])
+// 				cylinder(d = H, h = W);
 
-				translate([0, 0, S-H/2])
-				rotate([-90, 0, 0])
-				cylinder(d = H, h = W);
-			}
-		}
+// 				translate([0, 0, S-H/2])
+// 				rotate([-90, 0, 0])
+// 				cylinder(d = H, h = W);
+// 			}
+// 		}
 
-		union()
-		{
-			rotate([0, A, 0])
-			cylinder(d = PD2 + 4*G, h = PH1 + PH2);
+// 		union()
+// 		{
+// 			rotate([0, A, 0])
+// 			cylinder(d = PD2 + 4*G, h = PH1 + PH2);
 
-			hull()
-			{
-				translate([L1-1, 0, -g])
-				cylinder(d = 3.5, h = S + 2*g);
+// 			hull()
+// 			{
+// 				translate([L1-1, 0, -g])
+// 				cylinder(d = 3.5, h = S + 2*g);
 
-				translate([L-5, 0, -g])
-				cylinder(d = 3.5, h = S + 2*g);
-			}
+// 				translate([L-5, 0, -g])
+// 				cylinder(d = 3.5, h = S + 2*g);
+// 			}
 
-			rotate([0, A, 0])
-			translate([0, 0, H1+2*H2])
-			cylinder(d1 = PD2 + 4*G, d2 = 2.5, h = 1.35);
-		}
-	}
-}
+// 			rotate([0, A, 0])
+// 			translate([0, 0, H1+2*H2])
+// 			cylinder(d1 = PD2 + 4*G, d2 = 2.5, h = 1.35);
+// 		}
+// 	}
+// }
 
-module probe_holder2()
-{
-	A = 30;
+// module probe_holder2()
+// {
+// 	A = 30;
 
-	L = PH_L;
-	H = PH_H;
-	W = PH_W;
+// 	L = PH_L;
+// 	H = PH_H;
+// 	W = PH_W;
 
-	L1 = L/2;
+// 	L1 = L/2;
 
-	W1 = 10.00;
+// 	W1 = 10.00;
 
-	H1 =  4.00;
-	H2 =  3.50;
+// 	H1 =  4.00;
+// 	H2 =  3.50;
 
-	D1 =  1.30;
-	D2 =  1.65;
-	D3 =  2.00;
+// 	D1 =  1.30;
+// 	D2 =  1.65;
+// 	D3 =  2.00;
 
-	S = (H1+2*H2)*cos(A)+(D3/2)*sin(A);
+// 	S = (H1+2*H2)*cos(A)+(D3/2)*sin(A);
 
-	difference()
-	{
-		union()
-		{
-			rotate([0, A, 0])
-			translate([0, 0, H1])
-			cylinder(d1 = D1, d2 = D2, h = H2);
+// 	difference()
+// 	{
+// 		union()
+// 		{
+// 			rotate([0, A, 0])
+// 			translate([0, 0, H1])
+// 			cylinder(d1 = D1, d2 = D2, h = H2);
 
-			hull()
-			{
-				rotate([0, A, 0])
-				translate([0, 0, H1 + H2])
-				cylinder(d1 = D2, d2 = D3, h = H2);
+// 			hull()
+// 			{
+// 				rotate([0, A, 0])
+// 				translate([0, 0, H1 + H2])
+// 				cylinder(d1 = D2, d2 = D3, h = H2);
 
-				intersection()
-				{
-					rotate([0, A, 0])
-					translate([0, 0, H1 + 2*H2])
-					cylinder(d = D3, h = H2);
+// 				intersection()
+// 				{
+// 					rotate([0, A, 0])
+// 					translate([0, 0, H1 + 2*H2])
+// 					cylinder(d = D3, h = H2);
 
-					translate([0, -W/2, S-H])
-					cube([L, W, H]);
-				}
+// 					translate([0, -W/2, S-H])
+// 					cube([L, W, H]);
+// 				}
 
-				translate([L1, -W/2, S-H])
-				cube([L-L1, W, H]);
-			}
+// 				translate([L1, -W/2, S-H])
+// 				cube([L-L1, W, H]);
+// 			}
 
-			translate([L1, -W/2, S-H])
-			cube([L-L1, W, H]);
+// 			translate([L1, -W/2, S-H])
+// 			cube([L-L1, W, H]);
 
-			translate([L-H/2, -W/2, 0])
-			hull()
-			{
-				translate([0, 0, H/2])
-				rotate([-90, 0, 0])
-				cylinder(d = H, h = W);
+// 			translate([L-H/2, -W/2, 0])
+// 			hull()
+// 			{
+// 				translate([0, 0, H/2])
+// 				rotate([-90, 0, 0])
+// 				cylinder(d = H, h = W);
 
-				translate([0, 0, S-H/2])
-				rotate([-90, 0, 0])
-				cylinder(d = H, h = W);
-			}
-		}
+// 				translate([0, 0, S-H/2])
+// 				rotate([-90, 0, 0])
+// 				cylinder(d = H, h = W);
+// 			}
+// 		}
 
-		union()
-		{
-			rotate([0, A, 0])
-			cylinder(d = PD2 + 4*G, h = PH1 + PH2);
+// 		union()
+// 		{
+// 			rotate([0, A, 0])
+// 			cylinder(d = PD2 + 4*G, h = PH1 + PH2);
 
-			hull()
-			{
-				translate([L1-1, 0, -g])
-				cylinder(d = 3.5, h = S + 2*g);
+// 			hull()
+// 			{
+// 				translate([L1-1, 0, -g])
+// 				cylinder(d = 3.5, h = S + 2*g);
 
-				translate([L-5, 0, -g])
-				cylinder(d = 3.5, h = S + 2*g);
-			}
+// 				translate([L-5, 0, -g])
+// 				cylinder(d = 3.5, h = S + 2*g);
+// 			}
 
-			*rotate([0, A, 0])
-			translate([0, 0, H1+2*H2])
-			cylinder(d1 = PD2 + 4*G, d2 = 2.5, h = 1.35);
+// 			*rotate([0, A, 0])
+// 			translate([0, 0, H1+2*H2])
+// 			cylinder(d1 = PD2 + 4*G, d2 = 2.5, h = 1.35);
 
-			translate([0, 0, 5.3])
-			rotate([0, 45+10, 0])
-			translate([-11, -5, 0])
-			cube([11, 11, 11]);
-		}
-	}
-}
+// 			translate([0, 0, 5.3])
+// 			rotate([0, 45+10, 0])
+// 			translate([-11, -5, 0])
+// 			cube([11, 11, 11]);
+// 		}
+// 	}
+// }
 
 module probe_holder3()
 {
@@ -515,6 +519,58 @@ module cover()
 	}
 }
 
+module cover2()
+{
+	W = B_W;
+	L = B_L;
+	H = B_H+10;
+
+	d = 3.1;
+
+	difference()
+	{
+		union()
+		{
+			difference()
+			{
+				cube([W, L, H], center = true);
+
+				translate([0, 0, (d+g)/2])
+				cube([W-2*d, L-2*d, H-d+g], center = true);
+			}
+
+			translate([0, 0, d/2])
+			difference()
+			{
+				cube([W-2*d  , L-2*d  , H+d  ], center = true);
+				cube([W-2*d-2, L-2*d-2, H+d+g], center = true);
+			}
+		}
+
+		translate([0, 0, -H/2-g])
+		cylinder(d = 17.5, h = d+2*g);
+
+		for(a = [0:120:360])
+		rotate([0, 0, a])
+		translate([25/2, 0, -H/2-g])
+		cylinder(d = 3.1, h = d+2*g);
+
+		for(a = [60:120:360])
+		rotate([0, 0, a])
+		translate([25/2, 0, -H/2-g])
+		cylinder(d = 5+pg, h = d+2*g);
+
+		for(a = [0:120:360])
+		rotate([0, 0, a])
+		translate([25/2, 0, -H/2-g])
+		{
+			translate([0, 0, 1.5])
+			rotate([0, 0, 30])
+			screw_nut (M3Nd+pg, d-g);
+		}
+	}
+}
+
 module rider_ussr()
 {
 	// рейтер СССР
@@ -594,14 +650,168 @@ module cap1()
 }
 
 // =============================================
+
+module fiber_holder()
+{
+	h1 =  2.60;
+	w1 = 12.70;
+	l1 = 12.70;
+	d1 = 16.10;
+
+	d2 = 3.24; // центральное отверстие
+	d3 = 2.54; // отверстие крепления
+
+	w2 = 6.11;
+
+	h2 = 12.08;
+	d4 =  5.30;
+
+	// фланец
+	difference()
+	{
+		intersection()
+		{
+			translate([-w1/2, -l1/2, 0])
+			cube([w1, l1, h1]);
+
+			cylinder(d = d1, h = h1);
+		}
+
+		// центральное отверстие
+		translate([0, 0, -g])
+		cylinder(d = d2, h = h1+2*g);
+
+		// отверстия крепления
+		for(a = [45:90:360-45])
+		rotate([0, 0, a])
+		translate([w2, 0, -g])
+		cylinder(d = d3, h = h1+2*g);
+	}
+
+	difference()
+	{
+		cylinder(d = d4, h = h2);
+		// центральное отверстие
+		translate([0, 0, -g])
+		cylinder(d = d2, h = h2+2*g);
+	}
+}
+
+*fiber_holder();
+
+module lens_holder()
+{
+	d0 = 12.70;
+	d1 = d0 + 2*0.2;
+	d2 = d0 - 2*0.5;
+	d3 = 3.10;
+	d4 = 5.30;
+	h1 = 2.00;
+	h2 = 1.00;
+
+	D0 = 35;
+	D1 = 25;
+
+	difference()
+	{
+		cylinder(d = D0, h = h1);
+
+		for(a = [0:60:360])
+		rotate([0, 0, a])
+		translate([D1/2, 0, -g])
+		cylinder(d = d3, h = h1+2*g);
+
+		translate([0, 0, -g])
+		cylinder(d = d2, h = h1+2*g);
+
+		translate([0, 0, h2])
+		cylinder(d = d1, h = h1-h2+g);
+	}
+}
+
+*lens_holder();
+
+module fh_holder()
+{
+	d0 = 12.70;
+	d1 = d0 + 2*0.2;
+	d2 = d0 - 2*0.5;
+	d3 =  3.10;
+	d4 =  5.30;
+	h1 =  4.00;
+	h2 = 10.00;
+
+	D0 = 35;
+	D1 = 25;
+
+	difference()
+	{
+		union()
+		{
+			cylinder(d = D0      , h = h1);
+			cylinder(d = d0 + 5.0, h = h2);
+		}
+
+		for(a = [0:120:360])
+		rotate([0, 0, a])
+		translate([D1/2, 0, -g])
+		cylinder(d = d3, h = h1+2*g);
+
+		for(a = [60:120:360])
+		rotate([0, 0, a])
+		translate([D1/2, 0, -g])
+		{
+			translate([0, 0, h1/2])
+			rotate([0, 0, 30])
+			screw_nut (M3Nd+2*0.2, h2-2+g);
+			cylinder(d = d3, h = h1+2*g);
+		}
+
+		translate([0, 0, -g])
+		cylinder(d1 = d0, d2 = 4, h = h2-2+2*g);
+		translate([0, 0, -g])
+		cylinder(d = 4, h = h2+2*g);
+
+		for(a = [0:90:360])
+		rotate([0, 0, a])
+		translate([6.11, 0, -g])
+		{
+			screw_nut (M2Nd+2*0.2, h2-2+g);
+			cylinder(d = 2.54, h = h2+2*g);
+		}
+	}
+}
+
+*fh_holder();
+
+// =============================================
+
+// =============================================
 module view()
 {
 	translate([0, 0, -B_H/2])
 	box();
 
-	rotate([0, 180, 0])
-	translate([0, 0, -B_H/2-B_H])
-	cover();
+	translate([0, 0, B_H/2+B_H])
+	{
+		rotate([180, 0, 0])
+		translate([0, 0, B_H/2+5])
+		#cover2();
+
+		fh_holder();
+
+		translate([0, 0, 10])
+		rotate([0, 0, 45])
+		fiber_holder();
+
+
+		translate([0, 0, -11.4])
+		rotate([180, 0, 0])
+		lens_holder();
+
+		translate([0, 0, -15.4])
+		lens_holder();
+	}
 
 
 	W = 25;
@@ -615,26 +825,26 @@ module view()
 		translate([W/2, L/2, 0]) rotate([0, 0, 45])
 		{
 			probe_holder3();
-			rotate([0, 30, 0]) probe();
+			rotate([0, 10, 0]) probe();
 		}
 
 		translate([W/2, L/2, 0]) rotate([0, 0, 0])
 		{
 			probe_holder3();
-			rotate([0, 30, 0]) probe();
+			rotate([0, 10, 0]) probe();
 		}
 
 		translate([W/2, L/2, 0]) rotate([0, 0, 90])
 		{
 			probe_holder3();
-			rotate([0, 30, 0]) probe();
+			rotate([0, 10, 0]) probe();
 		}
 
 
 		translate([W/2, L/2, 0]) rotate([0, 0, -45])
 		{
 			probe_holder3();
-			rotate([0, 30, 0]) probe();
+			rotate([0, 10, 0]) probe();
 		}
 
 		color("Silver")
@@ -661,11 +871,11 @@ view();
 
 *box();
 *cover();
+*cover2();
 *table();
 *rider_ussr();
 *cap1();
 *probe_holder();
 *probe_holder2();
 *probe_holder3();
-
 
