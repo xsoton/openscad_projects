@@ -324,11 +324,133 @@ module cartridge3()
 	}
 }
 
+// ==================== FITTING ====================
+
+fnD = (26 + pg)/cos(30);
+fnL = 6;
+
+module fitting_nut()
+{
+	screw_nut(fnD, fnL);
+	translate([0, 0, fnL-g])
+	cylinder(d = 21, h = fnL);
+}
+
+// ==================== LABYRINTE ====================
+
+labD1 = 14.8;
+labD4 = 26.0;
+
+module labyr1()
+{
+	D1 = 14.8;
+	D2 =  2.0;
+	D3 =  6.0;
+	D4 = 26.0;
+	L1 = D1;
+	L2 = D1/6;
+
+	A = 180;
+	N = 5;
+	M = 8;
+
+	da = A/N;
+	dl = L1/N;
+	X = D1/2-D2/2-1;
+
+	difference()
+	{
+		union()
+		{
+			cylinder(d = D1, h = L1);
+			translate([0, 0, -L2])
+			cylinder(d = D4, h = L2);
+		}
+		translate([0, 0, L1-L2])
+		cylinder(d = D1-2, h = L2+g);
+
+		translate([0, 0, -L2])
+		for(a = [0:360/M:360-360/M])
+		for(i = [0:1:N-1])
+		rotate([0, 0, a])
+		hull()
+		{
+			rotate([0, 0, da*(i%2)])
+			translate([X, 0, dl*i])
+			cylinder(d = D2, h=g, center = true);
+
+			rotate([0, 0, da*((i+1)%2)])
+			translate([X, 0, dl*(i+1)])
+			cylinder(d = D2, h=g, center = true);
+		}
+	}
+}
+
+module labyr2()
+{
+	D1 = 14.8;
+	D2 =  2.0;
+	D3 =  6.0;
+	D4 = 35.0;
+	L1 = D1;
+	L2 = D1/6;
+
+	A = 180;
+	N = 5;
+	M = 8;
+
+	da = A/N;
+	dl = L1/N;
+	X = D1/2-D2/2-1;
+
+	translate([0, 0, L2])
+	difference()
+	{
+		union()
+		{
+			cylinder(d = D1, h = L1);
+			translate([0, 0, -L2])
+			cylinder(d = D4, h = L2);
+		}
+
+		translate([0, 0, L1-L2])
+		cylinder(d = D1-2, h = L2+g);
+
+		for(a = [0:60:300])
+		rotate([0, 0, a])
+		translate([25/2, 0, -L2])
+		{
+			translate([0, 0, L2/2])
+			rotate([0, 0, 30])
+			screw_nut (M3Nd+2*0.2, 4-2+g);
+
+			translate([0, 0, -g])
+			cylinder(d = 3.1, h = L2+2*g);
+		}
+
+		translate([0, 0, -L2])
+		for(a = [0:360/M:360-360/M])
+		for(i = [0:1:N-1])
+		rotate([0, 0, a])
+		hull()
+		{
+			rotate([0, 0, da*(i%2)])
+			translate([X, 0, dl*i])
+			cylinder(d = D2, h=g, center = true);
+
+			rotate([0, 0, da*((i+1)%2)])
+			translate([X, 0, dl*(i+1)])
+			cylinder(d = D2, h=g, center = true);
+		}
+	}
+}
+
 // ==================== BOX ====================
 
 B_W = 150;
 B_L = 150;
-B_H = 35.0;
+B_H = 40.0;
+B_H2 = 45.0;
 
 module box()
 {
@@ -387,6 +509,10 @@ module box()
 				translate([0, 0, H4/2]) cube([H41+g, D4, H4+2*g], center = true);
 			}
 		}
+
+		translate([-B_W/2+fnL+1.5, -B_L/4, 0])
+		rotate([0, -90, 0])
+		fitting_nut();
 	}
 
 	difference()
@@ -430,7 +556,7 @@ module cover()
 {
 	W = B_W;
 	L = B_L;
-	H = B_H+10;
+	H = B_H2;
 
 	d = 3.1;
 
@@ -444,6 +570,9 @@ module cover()
 
 				translate([0, 0, (d+g)/2])
 				cube([W-2*d, L-2*d, H-d+g], center = true);
+
+				// translate([W/2-labD4/2-5, -(L/2-labD4/2-5), -H/2-g])
+				// cylinder(d = labD1, h = d + 2*g);
 			}
 
 			translate([0, 0, d/2])
@@ -463,21 +592,44 @@ module cover()
 		translate([+W/2-1.5  , -26.5/2, H/2-19]) rotate([0,-90,0]) screw_nut (M4Nd+pg, M4Nl+  g);
 		translate([+W/2-1.5-g, -26.5/2, H/2-19]) rotate([0,+90,0]) screw_body(M4D +pg,    3+2*g);
 
-		translate([0, 0, -H/2-g])
-		cylinder(d = 17.5, h = d+2*g);
-
-		for(a = [0:60:300])
-		rotate([0, 0, a])
-		translate([25/2, 0, -H/2-g])
-		cylinder(d = 3.1, h = d+2*g);
-
-		for(a = [0:60:300])
-		rotate([0, 0, a])
-		translate([25/2, 0, -H/2-g])
+		union()
 		{
-			translate([0, 0, 1.5])
-			rotate([0, 0, 30])
-			screw_nut (M3Nd+pg, d-g);
+			translate([0, 0, -H/2-g])
+			cylinder(d = 17.5, h = d+2*g);
+
+			for(a = [0:60:300])
+			rotate([0, 0, a])
+			translate([25/2, 0, -H/2-g])
+			cylinder(d = 3.1, h = d+2*g);
+
+			for(a = [0:60:300])
+			rotate([0, 0, a])
+			translate([25/2, 0, -H/2-g])
+			{
+				translate([0, 0, 1.5])
+				rotate([0, 0, 30])
+				screw_nut (M3Nd+pg, d-g);
+			}
+		}
+
+		translate([W/2-25, -(L/2-25), 0])
+		{
+			translate([0, 0, -H/2-g])
+			cylinder(d = 17.5, h = d+2*g);
+
+			for(a = [0:60:300])
+			rotate([0, 0, a])
+			translate([25/2, 0, -H/2-g])
+			cylinder(d = 3.1, h = d+2*g);
+
+			for(a = [0:60:300])
+			rotate([0, 0, a])
+			translate([25/2, 0, -H/2-g])
+			{
+				translate([0, 0, 1.5])
+				rotate([0, 0, 30])
+				screw_nut (M3Nd+pg, d-g);
+			}
 		}
 	}
 }
@@ -654,8 +806,11 @@ module view()
 	translate([0, 0, B_H/2+B_H+30])
 	{
 		rotate([180, 0, 0])
-		translate([0, 0, B_H/2+5])
+		translate([0, 0, B_H2/2])
 		cover();
+
+		translate([B_W/2-25, (B_L/2-25), 0])
+		labyr2();
 
 		fh_holder();
 
@@ -673,14 +828,14 @@ module view()
 
 	translate([0, 0, -T_H/2]) table();
 
-	*translate([0, 0, -C_H/2]) cartridge1();
-	*translate([0, 0, EH1/2-0.5]) electrode(EW1, EL1, EH1);
+	translate([0, 0, -C_H/2]) cartridge1();
+	translate([0, 0, EH1/2-0.5]) electrode(EW1, EL1, EH1);
 
 	*translate([0, 0, -C_H/2]) cartridge2();
 	*translate([0, 0, EH2/2-0.5]) electrode(EW2, EL2, EH2);
 
-	translate([0, 0, -C_H/2]) cartridge3();
-	translate([0, 0, EH3/2-0.5]) electrode(EW3, EL3, EH3);
+	*translate([0, 0, -C_H/2]) cartridge3();
+	*translate([0, 0, EH3/2-0.5]) electrode(EW3, EL3, EH3);
 
 	color("silver")
 	rotate([0, 0, -90])
