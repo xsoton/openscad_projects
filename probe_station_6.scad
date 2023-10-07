@@ -66,7 +66,7 @@ module probe_holder()
 
 	L = PH_L;
 	H = PH_H;
-	W = PH_W;
+	W = PH_W+1;
 
 	L1 = L/2;
 
@@ -138,14 +138,26 @@ module probe_holder()
 				cylinder(d = 3.5, h = S + 2*g);
 			}
 
-			*rotate([0, A, 0])
-			translate([0, 0, H1+2*H2])
-			cylinder(d1 = PD2 + 4*G, d2 = 2.5, h = 1.35);
-
 			translate([0, 0, 8.8])
 			rotate([0, 45+10, 0])
 			translate([-11, -5, 0])
 			cube([11, 11, 11]);
+
+			translate([L+g, W/2-1, S-2])
+			rotate([0, -90, 0])
+			cylinder(d = 1.0, h = L1+0.2);
+
+			translate([L1, W/2-1, S-2])
+			rotate([0, -90+10, 7.5])
+			cylinder(d = 1.0, h = L1);
+
+			translate([L+g, -W/2+1, S-2])
+			rotate([0, -90, 0])
+			cylinder(d = 1.0, h = L1+0.2);
+
+			translate([L1, -W/2+1, S-2])
+			rotate([0, -90+10, -7.5])
+			cylinder(d = 1.0, h = L1);
 		}
 	}
 }
@@ -209,8 +221,8 @@ module table()
 
 // ==================== CARTRIDGE ====================
 
-C_W = 25;
-C_L = 25;
+C_W = 25+1;
+C_L = 25+1;
 C_H = 2;
 
 C_w1 = 10.000;
@@ -860,3 +872,7 @@ module view()
 }
 
 view();
+
+*probe_holder();
+*cartridge1();
+*cartridge2();
