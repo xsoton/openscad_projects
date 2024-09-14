@@ -907,6 +907,7 @@ module connector_bottom()
 }
 
 
+
 module plate_bottom()
 {
 	H = 1.5;
@@ -914,9 +915,9 @@ module plate_bottom()
 	difference()
 	{
 		translate([0, 0, H/2])
-		cube([60, 50, H], center = true);
+		cube([30+C2w-2*g, C2l+5, H], center = true);
 
-		for(x=[-20,20])
+		for(x=[-15,15])
 		translate([x, 0, H/2])
 		cube([C5w+2*G, C5l+2*G, H+2*g], center = true);
 
@@ -949,7 +950,7 @@ module plate_top()
 		union()
 		{
 			translate([0, 0, H/2])
-			cube([60, 50, H], center = true);
+			cube([30+C2w, C2l, H], center = true);
 
 			translate([0, 0, (10-1.5)/2])
 			cube([EW3+2, EL3+2, 10-1.5], center = true);
@@ -957,7 +958,7 @@ module plate_top()
 
 		union()
 		{
-			for(x=[-20,20])
+			for(x=[-15,15])
 			translate([x, 0, H/2])
 			cube([C1w+2*G, C1l+2*G, H+2*g], center = true);
 
@@ -1004,7 +1005,7 @@ module plate_top()
 module view2()
 {
 
-	for(x = [-20, 20])
+	for(x = [-15, 15])
 	translate([x,0,])
 	{
 		color("Gray")
