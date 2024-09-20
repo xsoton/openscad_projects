@@ -210,8 +210,8 @@ C_l1 = 10.000;
 C_w2 =  9.517;
 C_l2 = 10.286;
 
-C_w3 = 12.800;
-C_l3 = 13.780;
+C_w3 = 13.780;
+C_l3 = 12.800;
 
 C_g  = 0.200;
 
@@ -311,7 +311,7 @@ module cartridge3()
 
 		translate([0, L/2-2, H/2-0.5])
 		linear_extrude(0.5+g)
-		text("12.800 x 13.780", size = 1.8, halign = "center", valign = "center");
+		text("13.780 x 12.800", size = 1.8, halign = "center", valign = "center");
 	}
 }
 
@@ -923,6 +923,14 @@ module plate_bottom()
 
 		translate([-EW3/6, 0, H/2+(H/2+g)/2]) cube([1, EL3+10, H/2+g], center = true);
 		translate([+EW3/6, 0, H/2+(H/2+g)/2]) cube([1, EL3+10, H/2+g], center = true);
+
+		translate([0, (C2l+5)/2-2, H-0.5])
+		linear_extrude(0.5+g)
+		text("13.78 x 12.80", size = 1.8, halign = "center", valign = "center");
+
+		translate([0, (C2l+5)/2-5, H-0.5])
+		linear_extrude(0.5+g)
+		text("MD2", size = 1.8, halign = "center", valign = "center");
 	}
 
 	difference()
@@ -931,7 +939,7 @@ module plate_bottom()
 		cube([EW3+2, EL3+2, 1], center = true);
 
 		translate([0, 0, H+(1+g)/2])
-		cube([EW3, EL3, 1+g], center = true);
+		cube([EW3+2*G, EL3+2*G, 1+g], center = true);
 
 		translate([0, 0, H+(1+g)/2])
 		cube([EW3-2, EL3+2+2*g, 1+g], center = true);
@@ -972,8 +980,8 @@ module plate_top()
 					y = 0.7 + i*1.4;
 					translate([x, y, -g])
 					{
-						cylinder(d=0.35, h=10-1.5+2*g);
-						cylinder(d=1, h=1);
+						cylinder(d=0.4, h=10-1.5+2*g);
+						cylinder(d=1.1, h=1);
 					}
 				}
 
@@ -982,8 +990,8 @@ module plate_top()
 					y = -0.7 + i*1.4;
 					translate([x, y, -g])
 					{
-						cylinder(d=0.35, h=10-1.5+2*g);
-						cylinder(d=1, h=1);
+						cylinder(d=0.4, h=10-1.5+2*g);
+						cylinder(d=1.1, h=1);
 					}
 				}
 			}
@@ -994,10 +1002,15 @@ module plate_top()
 				y = i*1.4;
 				translate([x, y, -g])
 					{
-						cylinder(d=0.35, h=10-1.5+2*g);
-						cylinder(d=1, h=1);
+						cylinder(d=0.4, h=10-1.5+2*g);
+						cylinder(d=1.1, h=1);
 					}
 			}
+
+			// translate([0, C2l/2-2, 0.5])
+			// rotate([0, 180, 0])
+			// linear_extrude(0.5+g)
+			// text("MD2", size = 1.8, halign = "center", valign = "center");
 		}
 	}
 }
@@ -1054,5 +1067,6 @@ module view2()
 
 }
 
+*view2();
 
-view2();
+plate_top();
