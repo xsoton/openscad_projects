@@ -648,7 +648,7 @@ module cover()
 
 // ==================== OPTICS ====================
 
-module fiber_holder()
+module fiber_sma_holder()
 {
 	h1 =  2.60;
 	w1 = 12.70;
@@ -692,6 +692,73 @@ module fiber_holder()
 		translate([0, 0, -g])
 		cylinder(d = d2, h = h2+2*g);
 	}
+}
+
+module fiber_fc_holder()
+{
+	h1 =  2.00;
+	w1 = 15.00; // ширина фланца
+	l1 = 15.00; // длина фланца
+	d1 = 19.10; // диаметр "среза" углов
+
+	d2 = 2.70; // центральное отверстие
+	d3 = 2.60; // отверстие крепления
+	d31 = 4.0; // углубление отверстия крепления
+
+	w2 = 13.40/2;
+
+	h2 = 7.44;
+	d4 = 8.00;
+
+	h3 = 2.0;
+	d5 = 6.50;
+
+	// фланец
+	difference()
+	{
+		union()
+		{
+			intersection()
+			{
+				translate([-w1/2, -l1/2, 0])
+				cube([w1, l1, h1]);
+
+				cylinder(d = d1, h = h1);
+			}
+
+			cylinder(d = d4, h = h2);
+		}
+
+		// центральное отверстие
+		translate([0, 0, -g])
+		{
+			cylinder(d = d2, h = h2+2*g);
+			cylinder(d = d5, h = 2+g);
+		}
+
+		// отверстия крепления
+		for(a = [45:90:360-45])
+		rotate([0, 0, a])
+		translate([w2, 0, 0])
+		{
+			translate([0, 0, -g])
+			cylinder(d = d3, h = h1+2*g);
+			translate([0, 0, 0.5])
+			cylinder(d = d31, h = h1-0.5+g);
+		}
+	}
+}
+
+module fiber_fc_holder2()
+{
+	d1 = 2.70+0.2; // центральное отверстие
+	
+	h2 = 2.0-0.2;
+	d2 = 6.50-0.2;
+
+
+	// D1 = 
+
 }
 
 module lens_holder1()
@@ -809,6 +876,251 @@ module fh_holder()
 	}
 }
 
+module fc_holder1()
+{
+	w1 = 70;
+	l1 = 70;
+	h1 = 10;
+
+	w2 = 29.6;
+	l2 = 20.0;
+	h2 = h1;
+
+	d0 = 12.70;
+	d01 = d0 + 2*0.2;
+	d02 = d0 - 2*0.5;
+	f0 = 24.5;
+
+	w11 = 15.0;
+	l11 = 15.0;
+	h11 = 2.1;
+
+	// box
+	difference()
+	{
+		union()
+		{
+			difference()
+			{
+				union()
+				{
+					translate([0, -l2, 0])
+					cube([w2, l2, h2]);
+
+					translate([w2, -l1, 0])
+					cube([w1, l1, h1]);
+				}
+
+				union()
+				{
+					translate([-g, -(l2-1), 1])
+					cube([w2+1+2*g, l2-2, h2-1+g]);
+
+					translate([(w2+1), -(l1-1), 1])
+					cube([w1-2, l1-2, h1-1+g]);
+				}
+			}
+
+			translate([w2+w1/2, -l1/2-5, 0])
+			cylinder(d = 45, h = h1);
+		}
+
+		translate([w2+w1/2, -l1/2-5, -g])
+		cylinder(d = 45-2, h = h1+2*g);
+
+		translate([w1+w2-1-g, -l2/2, h1])
+		rotate([0, 90, 0])
+		cylinder(d = 4, h = 1+2*g);
+	}
+
+	//interface
+	union()
+	{
+		translate([1+2+1,     -2, 0]) cube([-1-1+f0-0.2-1,     1.0, h2]);
+		translate([1+2+1+0.1, -2, 0]) cube([-1-1+f0-0.2-1-0.2, 0.9, h2+1]);
+
+		translate([1+2+1,     -l2+1.0, 0]) cube([-1-1+f0-0.2-1,     1.0, h2]);
+		translate([1+2+1+0.1, -l2+1.1, 0]) cube([-1-1+f0-0.2-1-0.2, 0.9, h2+1]);
+
+		translate([w2+1,     -2, 0]) cube([w1-2,     1.0, h2]);
+		translate([w2+1+0.1, -2, 0]) cube([w1-2-0.2, 0.9, h2+1]);
+
+		translate([w2+1,     -l1+1.0, 0]) cube([w1-2,     1.0, h2]);
+		translate([w2+1+0.1, -l1+1.1, 0]) cube([w1-2-0.2, 0.9, h2+1]);
+
+		translate([w2+1,     -l1+1.0, 0]) cube([1.0, l1-l2,     h2]);
+		translate([w2+1+0.1, -l1+1.1, 0]) cube([0.9, l1-l2-0.1, h2+1]);
+
+		translate([w2+w1-2, -l1+1.0, 0]) cube([1.0, l1-l2,     h2]);
+		translate([w2+w1-2, -l1+1.1, 0]) cube([0.9, l1-l2-0.1, h2+1]);
+
+		difference()
+		{
+			translate([w2+w1/2, -l1/2-5, 0])
+			cylinder(d = 45-2, h = h1);
+
+			translate([w2+w1/2, -l1/2-5, -g])
+			cylinder(d = 45-4, h = h1+2*g);
+		}
+
+		difference()
+		{
+			translate([w2+w1/2, -l1/2-5, 0])
+			cylinder(d = 45-2-0.2, h = h1+1);
+
+			translate([w2+w1/2, -l1/2-5, -g])
+			cylinder(d = 45-4, h = h1+1+2*g);
+		}
+	}
+
+	difference()
+	{
+		union()
+		{
+			translate([0, -l2, 0])
+			cube([1+2+1, l2, h2]);
+		}
+
+		union()
+		{
+			translate([-g, -l2/2, h1])
+			rotate([0, 90, 0])
+			cylinder(d = d02, h = 1+2+1+2*g);
+
+			translate([1, -l2/2, h1])
+			rotate([0, 90, 0])
+			cylinder(d = d01, h = 2);
+		}
+	}
+
+	difference()
+	{
+		union()
+		{
+			translate([1+1+f0-0.2-1, -l2, 0])
+			cube([1+0.2+1+h11+1, l2, h2]);
+		}
+
+		union()
+		{
+			translate([1+1+f0-0.2-1-g, -(w11-4)/2-l2/2, -(l11-4)/2+h1])
+			cube([1+0.2+1+h11+1+2*g, (w11-4)+g, (l11-4)+g]);
+
+			translate([1+1+f0-0.2, -w11/2-l2/2, -l11/2+h1])
+			cube([0.2, w11, l11]);
+
+			translate([1+1+f0+1, -w11/2-l2/2, -l11/2+h1])
+			cube([h11, w11, l11]);
+		}
+	}
+}
+
+*fc_holder1();
+
+module fc_holder2()
+{
+	w1 = 70;
+	l1 = 70;
+	h1 = 10;
+
+	w2 = 29.6;
+	l2 = 20.0;
+	h2 = h1;
+
+	d0 = 12.70;
+	d01 = d0 + 2*0.2;
+	d02 = d0 - 2*0.5;
+	f0 = 24.5;
+
+	w11 = 15.0;
+	l11 = 15.0;
+	h11 = 2.1;
+
+	mirror([0, 1, 0])
+	{
+		// box
+		difference()
+		{
+			union()
+			{
+				difference()
+				{
+					union()
+					{
+						translate([0, -l2, 0])
+						cube([w2, l2, h2]);
+
+						translate([w2, -l1, 0])
+						cube([w1, l1, h1]);
+					}
+
+					union()
+					{
+						translate([-g, -(l2-1), 1])
+						cube([w2+1+2*g, l2-2, h2-1+g]);
+
+						translate([(w2+1), -(l1-1), 1])
+						cube([w1-2, l1-2, h1-1+g]);
+					}
+				}
+
+				translate([w2+w1/2, -l1/2-5, 0])
+				cylinder(d = 45, h = h1);
+			}
+
+			translate([w2+w1/2, -l1/2-5, -g])
+			cylinder(d = 45-2, h = h1+2*g);
+
+			translate([w1+w2-1-g, -l2/2, h1])
+			rotate([0, 90, 0])
+			cylinder(d = 4, h = 1+2*g);
+		}
+
+		difference()
+		{
+			union()
+			{
+				translate([0, -l2, 0])
+				cube([1+2+1, l2, h2]);
+			}
+
+			union()
+			{
+				translate([-g, -l2/2, h1])
+				rotate([0, 90, 0])
+				cylinder(d = d02, h = 1+2+1+2*g);
+
+				translate([1, -l2/2, h1])
+				rotate([0, 90, 0])
+				cylinder(d = d01, h = 2);
+			}
+		}
+
+		difference()
+		{
+			union()
+			{
+				translate([1+1+f0-0.2-1, -l2, 0])
+				cube([1+0.2+1+h11+1, l2, h2]);
+			}
+
+			union()
+			{
+				translate([1+1+f0-0.2-1-g, -(w11-4)/2-l2/2, -(l11-4)/2+h1])
+				cube([1+0.2+1+h11+1+2*g, (w11-4)+g, (l11-4)+g]);
+
+				translate([1+1+f0-0.2, -w11/2-l2/2, -l11/2+h1])
+				cube([0.2, w11, l11]);
+
+				translate([1+1+f0+1, -w11/2-l2/2, -l11/2+h1])
+				cube([h11, w11, l11]);
+			}
+		}
+	}
+}
+
+fc_holder2();
+
 // ==================== VIEW ====================
 module view()
 {
@@ -828,7 +1140,7 @@ module view()
 
 		translate([0, 0, 10])
 		rotate([0, 0, 45])
-		fiber_holder();
+		fiber_sma_holder();
 
 		translate([0, 0, -11.4])
 		rotate([180, 0, 0])
@@ -871,8 +1183,12 @@ module view()
 	}
 }
 
-view();
+*view();
 
 *probe_holder();
 *cartridge1();
 *cartridge2();
+
+*fh_holder();
+*fiber_fc_holder();
+
