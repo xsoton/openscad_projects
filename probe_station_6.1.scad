@@ -1085,7 +1085,7 @@ module fc_holder1()
 	}
 }
 
-fc_holder1();
+*fc_holder1();
 
 module fc_holder2()
 {
@@ -1296,7 +1296,425 @@ module fc_holder2()
 	}
 }
 
-fc_holder2();
+*fc_holder2();
+
+module laser_holder1()
+{
+	DW = 2;    // толщина стенок
+	L = 20.0;
+	H = L/2;
+
+	Fl = 24.5; // фокус линзы
+	Dl = 12.7; // диаметр линзы
+	Al = 30;   // угол для линзы
+	Hl = 2.1;  // толщина линзы на краю
+
+	Di0 = 12.0; // внешний диаметр лазеры
+	Di1 = 10.0; // диаметр под линзу
+
+	w1 = 2.0;
+	w2 = Hl + 0.2;
+	w3 = 1.0;
+	w5 = 1.0;
+	w4 = Fl - w3 - w2/2 - w5;
+	w6 = 0.2;
+	w7 = w5;
+	w8 = w4;
+	w9 = w1;
+	w10 = w2;
+	w11 = w3;
+	w12 = 5.0;
+	w13 = 1.0;
+	w14 = 50.0;
+
+	l1 = Dl - 1.0;
+	l2 = Dl + 0.1;
+	l3 = l1;
+	l4 = L-2*DW;
+	l5 = 5.0;
+	l6 = 10.0;
+	l7 = l5;
+	l8 = l4;
+	l9 = l1;
+	l10 = l2;
+	l11 = l3;
+	l12 = l4;
+	l13 = Di1;
+	l14 = Di0+0.4;
+
+	// большая части
+	W1 = 70;
+	L1 = 70;
+	H1 = 10;
+	D1 = 40;
+
+	// меньшая часть
+	W = w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13+w14;
+
+	// часть коллиматора
+	difference()
+	{
+		translate([0, -L, 0])
+		cube([W, L, H]);
+
+		translate([-g, -L+DW, DW])
+		cube([W + 2*g, L-2*DW, H-DW+g]);
+	}
+
+	// направляющие
+	union()
+	{
+		DW1 = DW/2-0.1;
+		DW2 = DW/2+0.1;
+		
+		translate([DW, -DW, H])    cube([W-2*DW, DW1, 1.0]);
+		translate([DW, -L+DW2, H]) cube([W-2*DW, DW1, 1.0]);
+	}
+
+	// перегородки
+	union()
+	{
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w1, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l1, h = w1+2*g);
+
+			translate([w1/2, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d1 = l1, d2 = l2, h = w1/2+g);
+		}
+
+		translate([w1, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w2, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l2, h = w2+2*g);
+		}
+
+		translate([w1+w2, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w3, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l3, h = w3+2*g);
+		}
+
+		translate([w1+w2+w3+w4, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w5, L, H]);
+
+			translate([-g, -L/2-l5/2, H-l5/2])
+			cube([w5+2*g, l5, l5/2+g]);
+		}
+
+		translate([w1+w2+w3+w4+w5, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w6, L, H]);
+
+			translate([-g, -L/2-l6/2, H-l6/2])
+			cube([w6+2*g, l6, l6/2+g]);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w7, L, H]);
+
+			translate([-g, -L/2-l7/2, H-l7/2])
+			cube([w7+2*g, l7, l7/2+g]);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w9, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l9, h = w9+2*g);
+
+			translate([w9/2, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d1 = l9, d2 = l10, h = w1/2+g);
+		}
+		
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w10, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l10, h = w10+2*g);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w11, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l11, h = w11+2*g);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w13, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l13, h = w13+2*g);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w14, L, H]);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d = l14, h = w14+2*g);
+		}
+	}
+}
+
+laser_holder1();
+
+module laser_holder2()
+{
+	DW = 2;    // толщина стенок
+	L = 20.0;
+	H = L/2;
+
+	Fl = 24.5; // фокус линзы
+	Dl = 12.7; // диаметр линзы
+	Al = 30;   // угол для линзы
+	Hl = 2.1;  // толщина линзы на краю
+
+	Di0 = 12.0; // внешний диаметр лазеры
+	Di1 = 10.0; // диаметр под линзу
+
+	w1 = 2.0;
+	w2 = Hl + 0.2;
+	w3 = 1.0;
+	w5 = 1.0;
+	w4 = Fl - w3 - w2/2 - w5;
+	w6 = 0.2;
+	w7 = w5;
+	w8 = w4;
+	w9 = w1;
+	w10 = w2;
+	w11 = w3;
+	w12 = 5.0;
+	w13 = 1.0;
+	w14 = 50.0;
+
+	l1 = Dl - 1.0;
+	l2 = Dl + 0.1;
+	l3 = l1;
+	l4 = L-2*DW;
+	l5 = 5.0;
+	l6 = 10.0;
+	l7 = l5;
+	l8 = l4;
+	l9 = l1;
+	l10 = l2;
+	l11 = l3;
+	l12 = l4;
+	l13 = Di1;
+	l14 = Di0+0.4;
+
+	// большая части
+	W1 = 70;
+	L1 = 70;
+	H1 = 10;
+	D1 = 40;
+
+	// меньшая часть
+	W = w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13+w14;
+
+	mirror([0, 1, 0])
+	difference()
+	{
+		union()
+		{
+			// часть коллиматора
+			difference()
+			{
+				translate([0, -L, 0])
+				cube([W, L, H]);
+
+				translate([-g, -L+DW, DW])
+				cube([W + 2*g, L-2*DW, H-DW+g]);
+			}
+
+			// перегородки
+			union()
+			{
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w1, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l1, h = w1+2*g);
+
+					translate([w1/2, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d1 = l1, d2 = l2, h = w1/2+g);
+				}
+
+				translate([w1, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w2, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l2, h = w2+2*g);
+				}
+
+				translate([w1+w2, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w3, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l3, h = w3+2*g);
+				}
+
+				translate([w1+w2+w3+w4, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w5, L, H]);
+
+					translate([-g, -L/2-l5/2, H-l5/2])
+					cube([w5+2*g, l5, l5/2+g]);
+				}
+
+				translate([w1+w2+w3+w4+w5, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w6, L, H]);
+
+					translate([-g, -L/2-l6/2, H-l6/2])
+					cube([w6+2*g, l6, l6/2+g]);
+				}
+
+				translate([w1+w2+w3+w4+w5+w6, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w7, L, H]);
+
+					translate([-g, -L/2-l7/2, H-l7/2])
+					cube([w7+2*g, l7, l7/2+g]);
+				}
+
+				translate([w1+w2+w3+w4+w5+w6+w7+w8, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w9, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l9, h = w9+2*g);
+
+					translate([w9/2, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d1 = l9, d2 = l10, h = w1/2+g);
+				}
+				
+				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w10, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l10, h = w10+2*g);
+				}
+
+				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w11, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l11, h = w11+2*g);
+				}
+
+				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w13, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l13, h = w13+2*g);
+				}
+
+				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13, 0, 0])
+				difference()
+				{
+					translate([0, -L, 0])
+					cube([w14, L, H]);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d = l14, h = w14+2*g);
+				}
+			}
+		}
+
+		translate([0, 0, -1.1])
+		union()
+		{
+			DW1 = DW/2+0.1;
+			DW2 = DW/2-0.1;
+			
+			translate([DW-0.1, -DW-g, H])  cube([W-2*DW+0.1, DW1+g, 1.1+g]);
+			translate([DW-0.1, -L+DW2, H]) cube([W-2*DW+0.1, DW1+g, 1.1+g]);
+		}
+	}
+}
+
+translate([0, 1, 0])
+laser_holder2();
 
 // ==================== VIEW ====================
 module view()
