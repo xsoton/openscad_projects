@@ -1320,9 +1320,9 @@ module laser_holder1()
 	w6 = 0.2;
 	w7 = w5;
 	w8 = w4;
-	w9 = w1;
+	w9 = w3;
 	w10 = w2;
-	w11 = w3;
+	w11 = w1;
 	w12 = 5.0;
 	w13 = 1.0;
 	w14 = 50.0;
@@ -1335,12 +1335,12 @@ module laser_holder1()
 	l6 = 10.0;
 	l7 = l5;
 	l8 = l4;
-	l9 = l1;
+	l9 = l3;
 	l10 = l2;
-	l11 = l3;
+	l11 = l1;
 	l12 = l4;
 	l13 = Di1;
-	l14 = Di0+0.4;
+	l14 = Di0+0.7;
 
 	// большая части
 	W1 = 70;
@@ -1449,10 +1449,6 @@ module laser_holder1()
 			translate([-g, -L/2, H])
 			rotate([0, 90, 0])
 			cylinder(d = l9, h = w9+2*g);
-
-			translate([w9/2, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d1 = l9, d2 = l10, h = w1/2+g);
 		}
 		
 		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9, 0, 0])
@@ -1475,6 +1471,10 @@ module laser_holder1()
 			translate([-g, -L/2, H])
 			rotate([0, 90, 0])
 			cylinder(d = l11, h = w11+2*g);
+
+			translate([-g, -L/2, H])
+			rotate([0, 90, 0])
+			cylinder(d2 = l11, d1 = l10, h = w1/2+g);
 		}
 
 		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12, 0, 0])
@@ -1545,7 +1545,7 @@ module laser_holder2()
 	l11 = l3;
 	l12 = l4;
 	l13 = Di1;
-	l14 = Di0+0.4;
+	l14 = Di0+0.7;
 
 	// большая части
 	W1 = 70;
@@ -1649,10 +1649,6 @@ module laser_holder2()
 					translate([-g, -L/2, H])
 					rotate([0, 90, 0])
 					cylinder(d = l9, h = w9+2*g);
-
-					translate([w9/2, -L/2, H])
-					rotate([0, 90, 0])
-					cylinder(d1 = l9, d2 = l10, h = w1/2+g);
 				}
 				
 				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9, 0, 0])
@@ -1675,6 +1671,10 @@ module laser_holder2()
 					translate([-g, -L/2, H])
 					rotate([0, 90, 0])
 					cylinder(d = l11, h = w11+2*g);
+
+					translate([-g, -L/2, H])
+					rotate([0, 90, 0])
+					cylinder(d2 = l11, d1 = l10, h = w1/2+g);
 				}
 
 				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12, 0, 0])
@@ -1707,8 +1707,8 @@ module laser_holder2()
 			DW1 = DW/2+0.1;
 			DW2 = DW/2-0.1;
 			
-			translate([DW-0.1, -DW-g, H])  cube([W-2*DW+0.1, DW1+g, 1.1+g]);
-			translate([DW-0.1, -L+DW2, H]) cube([W-2*DW+0.1, DW1+g, 1.1+g]);
+			translate([DW-0.2, -DW-g, H])  cube([W-2*DW+0.4, DW1+g, 1.1+g]);
+			translate([DW-0.2, -L+DW2, H]) cube([W-2*DW+0.4, DW1+g, 1.1+g]);
 		}
 	}
 }
