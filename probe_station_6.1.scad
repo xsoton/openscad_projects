@@ -143,24 +143,18 @@ module probe_holder()
 			translate([-11, -5, 0])
 			cube([11, 11, 11]);
 
-			translate([L+g, W/2-1, S-2])
+			translate([L+g, W/2, S-2])
 			rotate([0, -90, 0])
-			cylinder(d = 1.0, h = L1+0.2);
+			cylinder(d = 1.5, h = 50, $fn=4);
 
-			translate([L1, W/2-1, S-2])
-			rotate([0, -90+10, 7.5])
-			cylinder(d = 1.0, h = L1);
-
-			translate([L+g, -W/2+1, S-2])
+			translate([L+g, -W/2, S-2])
 			rotate([0, -90, 0])
-			cylinder(d = 1.0, h = L1+0.2);
-
-			translate([L1, -W/2+1, S-2])
-			rotate([0, -90+10, -7.5])
-			cylinder(d = 1.0, h = L1);
+			cylinder(d = 1.5, h = 50, $fn=4);
 		}
 	}
 }
+
+probe_holder();
 
 T_W = 130;
 T_L = 130;
@@ -303,6 +297,7 @@ module cartridge1()
 		text("10.000 x 10.000", size = 1.8, halign = "center", valign = "center");
 	}
 }
+
 
 module cartridge2()
 {
@@ -457,6 +452,8 @@ module labyr2()
 	}
 }
 
+*labyr2();
+
 // ==================== BOX ====================
 
 B_W = 150;
@@ -604,24 +601,28 @@ module cover()
 		translate([+W/2-1.5  , -26.5/2, H/2-19]) rotate([0,-90,0]) screw_nut (M4Nd+pg, M4Nl+  g);
 		translate([+W/2-1.5-g, -26.5/2, H/2-19]) rotate([0,+90,0]) screw_body(M4D +pg,    3+2*g);
 
+		translate([0, 0, -H/2])
 		union()
 		{
-			translate([0, 0, -H/2-g])
-			cylinder(d = 17.5, h = d+2*g);
+			DW =  2; // толщина стенок
+			S  = 10; // бортик
+			SD =  2; // толщина бортика
 
-			for(a = [0:60:300])
-			rotate([0, 0, a])
-			translate([25/2, 0, -H/2-g])
-			cylinder(d = 3.1, h = d+2*g);
+			W = 30+1;
+			L = 20+1;
+			H = 25;
 
-			for(a = [0:60:300])
-			rotate([0, 0, a])
-			translate([25/2, 0, -H/2-g])
-			{
-				translate([0, 0, 1.5])
-				rotate([0, 0, 30])
-				screw_nut (M3Nd+pg, d-g);
-			}
+			translate([0, 0, 5/2])
+			cube([W, L, 5+2*g], center = true);
+
+			translate([+(W/2+DW+S/2), +(L/2+DW+S/2), -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
+			translate([+(W/2+DW+S/2), -(L/2+DW+S/2), -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
+			translate([-(W/2+DW+S/2), +(L/2+DW+S/2), -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
+			translate([-(W/2+DW+S/2), -(L/2+DW+S/2), -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
+			translate([            0, +(L/2+DW+S/2), -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
+			translate([            0, -(L/2+DW+S/2), -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
+			translate([+(W/2+DW+S/2),             0, -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
+			translate([-(W/2+DW+S/2),             0, -g]) union(){ cylinder(h=5+2*g, d=d); translate([0, 0, 1.5]) screw_nut (M3Nd+pg, d-g);}
 		}
 
 		translate([W/2-25, -(L/2-25), 0])
@@ -646,239 +647,57 @@ module cover()
 	}
 }
 
+*cover();
+
 // ==================== OPTICS ====================
-
-module fiber_sma_holder()
-{
-	h1 =  2.60;
-	w1 = 12.70;
-	l1 = 12.70;
-	d1 = 16.10;
-
-	d2 = 3.24; // центральное отверстие
-	d3 = 2.54; // отверстие крепления
-
-	w2 = 6.11;
-
-	h2 = 12.08;
-	d4 =  5.30;
-
-	// фланец
-	difference()
-	{
-		intersection()
-		{
-			translate([-w1/2, -l1/2, 0])
-			cube([w1, l1, h1]);
-
-			cylinder(d = d1, h = h1);
-		}
-
-		// центральное отверстие
-		translate([0, 0, -g])
-		cylinder(d = d2, h = h1+2*g);
-
-		// отверстия крепления
-		for(a = [45:90:360-45])
-		rotate([0, 0, a])
-		translate([w2, 0, -g])
-		cylinder(d = d3, h = h1+2*g);
-	}
-
-	difference()
-	{
-		cylinder(d = d4, h = h2);
-		// центральное отверстие
-		translate([0, 0, -g])
-		cylinder(d = d2, h = h2+2*g);
-	}
-}
-
-module fiber_fc_holder()
-{
-	h1 =  2.00;
-	w1 = 15.00; // ширина фланца
-	l1 = 15.00; // длина фланца
-	d1 = 19.10; // диаметр "среза" углов
-
-	d2 = 2.70; // центральное отверстие
-	d3 = 2.60; // отверстие крепления
-	d31 = 4.0; // углубление отверстия крепления
-
-	w2 = 13.40/2;
-
-	h2 = 7.44;
-	d4 = 8.00;
-
-	h3 = 2.0;
-	d5 = 6.50;
-
-	// фланец
-	difference()
-	{
-		union()
-		{
-			intersection()
-			{
-				translate([-w1/2, -l1/2, 0])
-				cube([w1, l1, h1]);
-
-				cylinder(d = d1, h = h1);
-			}
-
-			cylinder(d = d4, h = h2);
-		}
-
-		// центральное отверстие
-		translate([0, 0, -g])
-		{
-			cylinder(d = d2, h = h2+2*g);
-			cylinder(d = d5, h = 2+g);
-		}
-
-		// отверстия крепления
-		for(a = [45:90:360-45])
-		rotate([0, 0, a])
-		translate([w2, 0, 0])
-		{
-			translate([0, 0, -g])
-			cylinder(d = d3, h = h1+2*g);
-			translate([0, 0, 0.5])
-			cylinder(d = d31, h = h1-0.5+g);
-		}
-	}
-}
-
-module fiber_fc_holder2()
-{
-	d1 = 2.70+0.2; // центральное отверстие
-	
-	h2 = 2.0-0.2;
-	d2 = 6.50-0.2;
-
-
-	// D1 = 
-
-}
-
-module lens_holder1()
-{
-	d0 = 12.70;
-	d1 = d0 + 2*0.2;
-	d2 = d0 - 2*0.5;
-	d3 = 3.10;
-	d4 = 5.30;
-	h1 = 2.00;
-	h2 = 1.00;
-
-	D0 = 35;
-	D1 = 25;
-
-	difference()
-	{
-		cylinder(d = D0, h = h1);
-
-		for(a = [0:60:360])
-		rotate([0, 0, a])
-		translate([D1/2, 0, -g])
-		cylinder(d = d3, h = h1+2*g);
-
-		translate([0, 0, -g])
-		cylinder(d = d2, h = h1+2*g);
-
-		translate([0, 0, h2])
-		cylinder(d = d1, h = h1-h2+g);
-	}
-}
-
-module lens_holder2()
-{
-	d0 = 12.70;
-	d1 = d0 + 2*0.2;
-	d2 = d0 - 2*0.5;
-	d3 = 3.10;
-	d4 = 5.30;
-	h1 = 2.00;
-	h2 = 1.00;
-
-	D0 = 35;
-	D1 = 25;
-
-	difference()
-	{
-		cylinder(d = D0, h = h1);
-
-		for(a = [0:120:360])
-		rotate([0, 0, a])
-		translate([D1/2, 0, -g])
-		cylinder(d = d3, h = h1+2*g);
-
-		for(a = [60:120:360])
-		rotate([0, 0, a])
-		translate([D1/2, 0, -g])
-		rotate([0, 0, 30])
-		screw_nut (M3Nd+2*0.2, h1+2*g);
-
-
-		translate([0, 0, -g])
-		cylinder(d = d2, h = h1+2*g);
-
-		translate([0, 0, h2])
-		cylinder(d = d1, h = h1-h2+g);
-	}
-}
 
 module fh_holder()
 {
-	d0 = 12.70;
-	d1 = d0 + 2*0.2;
-	d2 = d0 - 2*0.5;
-	d3 =  3.10;
-	d4 =  5.30;
-	h1 =  4.00;
-	h2 = 10.00;
+	DW =  2; // толщина стенок
+	S  = 10; // бортик
+	SD =  2; // толщина бортика
 
-	D0 = 35;
-	D1 = 25;
+	W = 30+1;
+	L = 20+1;
+	H = 25+DW;
+
+	W1 = 20+0.5;
+	L1 = 20+0.5;
+
 
 	difference()
 	{
 		union()
 		{
-			cylinder(d = D0  , h = h1);
-			cylinder(d = d0+5, h = h2);
+			translate([0, 0, SD/2])
+			cube([W+2*DW+2*S, L+2*DW+2*S, SD], center = true);
+			translate([0, 0, H/2])
+			cube([W1+2*DW, L1+2*DW, H], center = true);
 		}
+		
+		translate([-W1/2, -L1/2, DW])
+		cube([W1, L1, H-DW+g]);
 
-		for(a = [0:60:300])
-		rotate([0, 0, a])
-		translate([D1/2, 0, 0])
-		{
-			translate([0, 0, 2.0])
-			rotate([0, 0, 30])
-			screw_nut (M3Nd+2*0.2, h1-2+g);
+		translate([0, 0, H/2])
+		cube([W1-4, L1-4, H+2*g], center = true);
 
-			translate([0, 0, -g])
-			cylinder(d = d3, h = h1+2*g);
-		}
-
-		translate([0, 0, -g])
-		cylinder(d1 = d0, d2 = 4, h = h2-2+2*g);
-		translate([0, 0, -g])
-		cylinder(d = 4, h = h2+2*g);
-
-		for(a = [0:90:360])
-		rotate([0, 0, a])
-		translate([6.11, 0, -g])
-		{
-			screw_nut (M2Nd+2*0.2, h2-2+g);
-			cylinder(d = 2.54, h = h2+2*g);
-		}
+		translate([+(W/2+DW+S/2), +(L/2+DW+S/2), -g]) cylinder(h=SD+2*g, d=3.1);
+		translate([+(W/2+DW+S/2), -(L/2+DW+S/2), -g]) cylinder(h=SD+2*g, d=3.1);
+		translate([-(W/2+DW+S/2), +(L/2+DW+S/2), -g]) cylinder(h=SD+2*g, d=3.1);
+		translate([-(W/2+DW+S/2), -(L/2+DW+S/2), -g]) cylinder(h=SD+2*g, d=3.1);
+		translate([            0, +(L/2+DW+S/2), -g]) cylinder(h=SD+2*g, d=3.1);
+		translate([            0, -(L/2+DW+S/2), -g]) cylinder(h=SD+2*g, d=3.1);
+		translate([+(W/2+DW+S/2),             0, -g]) cylinder(h=SD+2*g, d=3.1);
+		translate([-(W/2+DW+S/2),             0, -g]) cylinder(h=SD+2*g, d=3.1);
 	}
 }
+
+*fh_holder();
 
 module fc_holder1()
 {
 	DW = 2;    // толщина стенок
+	DWB = 0.0; // нижняя стенка
 
 	Fl = 24.5; // фокус линзы
 	Dl = 12.7; // диаметр линзы
@@ -894,7 +713,7 @@ module fc_holder1()
 	w5 = 1.0;
 	w4 = Fl - w3 - w2/2 - w5;
 	w6 = 0.2;
-	w7 = 1.0;
+	w7 = 0.5;
 	w8 = Df + 0.1;
 	w9 = 1.0;
 
@@ -911,7 +730,7 @@ module fc_holder1()
 	// большая части
 	W1 = 70;
 	L1 = 70;
-	H1 = 10;
+	H1 = DWB+10;
 	D1 = 40;
 
 	// меньшая часть
@@ -944,13 +763,9 @@ module fc_holder1()
 		translate([W2+W1/2, -L2-D1/2, -g])
 		cylinder(d = D1, h = DW+2*g);
 
-		translate([W1+W2-DW-g, -2*DW, H1/2-2])
+		translate([W1+W2-DW-g, -DW-3, DW+3])
 		rotate([0, 90, 0])
-		cylinder(d = 1.5, h = DW+2*g);
-
-		translate([W1+W2-DW-g, -2*DW, H1/2+2])
-		rotate([0, 90, 0])
-		cylinder(d = 1.5, h = DW+2*g);
+		cylinder(d = 6, h = DW+2*g);
 	}
 
 	// цилиндрическая стенка
@@ -1006,9 +821,9 @@ module fc_holder1()
 			rotate([0, 90, 0])
 			cylinder(d = l1, h = w1+2*g);
 
-			translate([w1/2, -L2/2, H1])
+			translate([w1*3/4, -L2/2, H1])
 			rotate([0, 90, 0])
-			cylinder(d1 = l1, d2 = l2, h = w1/2+g);
+			cylinder(d1 = l1, d2 = l2, h = w1/4+g);
 		}
 
 		translate([w1, 0, 0])
@@ -1017,9 +832,9 @@ module fc_holder1()
 			translate([0, -L2, 0])
 			cube([w2, L2, H1]);
 
-			translate([-g, -L2/2, H1])
-			rotate([0, 90, 0])
-			cylinder(d = l2, h = w2+2*g);
+			translate([w2/2, -L2/2, H1])
+			rotate([45, 0, 0])
+			cube([w2+2*g, l2, l2], center = true);
 		}
 
 		translate([w1+w2, 0, 0])
@@ -1085,11 +900,13 @@ module fc_holder1()
 	}
 }
 
-*fc_holder1();
+*translate([0, -0.5, 0])
+fc_holder1();
 
 module fc_holder2()
 {
 	DW = 2;    // толщина стенок
+	DWB = 0.0; // нижняя стенка
 
 	Fl = 24.5; // фокус линзы
 	Dl = 12.7; // диаметр линзы
@@ -1105,7 +922,7 @@ module fc_holder2()
 	w5 = 1.0;
 	w4 = Fl - w3 - w2/2 - w5;
 	w6 = 0.2;
-	w7 = 1.0;
+	w7 = 0.5;
 	w8 = Df + 0.1;
 	w9 = 1.0;
 
@@ -1122,7 +939,7 @@ module fc_holder2()
 	// большая части
 	W1 = 70;
 	L1 = 70;
-	H1 = 10;
+	H1 = DWB+10;
 	D1 = 40;
 
 	// меньшая часть
@@ -1183,9 +1000,9 @@ module fc_holder2()
 					rotate([0, 90, 0])
 					cylinder(d = l1, h = w1+2*g);
 
-					translate([w1/2, -L2/2, H1])
+					translate([w1*3/4, -L2/2, H1])
 					rotate([0, 90, 0])
-					cylinder(d1 = l1, d2 = l2, h = w1/2+g);
+					cylinder(d1 = l1, d2 = l2, h = w1/4+g);
 				}
 
 				translate([w1, 0, 0])
@@ -1194,9 +1011,9 @@ module fc_holder2()
 					translate([0, -L2, 0])
 					cube([w2, L2, H1]);
 
-					translate([-g, -L2/2, H1])
-					rotate([0, 90, 0])
-					cylinder(d = l2, h = w2+2*g);
+					translate([w2/2, -L2/2, H1])
+					rotate([45, 0, 0])
+					cube([w2+2*g, l2, l2], center = true);
 				}
 
 				translate([w1+w2, 0, 0])
@@ -1296,13 +1113,288 @@ module fc_holder2()
 	}
 }
 
-*fc_holder2();
+*translate([0, 0.5, 0])
+fc_holder2();
+
+lh_scale_x = 1.0;
 
 module laser_holder1()
+{
+	DW = 2.0;    // толщина стенок
+	L = 20.0;
+	H = L/2;
+	DWB = 0.0; // нижняя стенка
+
+	Fl = 24.5; // фокус линзы
+	Dl = 12.7; // диаметр линзы
+	Hl = 2.1;  // толщина линзы на краю
+
+	Di0 = 12.0; // внешний диаметр лазеры
+	Di1 = 10.0; // диаметр под линзу
+
+	w1 = 2.0;
+	w2 = Hl + 0.2;
+	w3 = 1.0;
+	w5 = 1.0;
+	w4 = Fl - w3 - w2/2 - w5;
+	w6 = 0.2;
+	w7 = w5;
+	w8 = w4;
+	w9 = w3;
+	w10 = w2;
+	w11 = w1;
+	w12 = 5.0;
+	w13 = 1.0;
+	w14 = 30.0;
+
+	l1 = Dl - 1.0;
+	l2 = Dl + 0.1;
+	l3 = l1;
+	l4 = L-2*DW;
+	l5 = 5.0;
+	l6 = 10.0;
+	l7 = l5;
+	l8 = l4;
+	l9 = l3;
+	l10 = l2;
+	l11 = l1;
+	l12 = l4;
+	l13 = Di1;
+	l14 = Di0+0.2;
+
+	// большая части
+	W1 = 70;
+	L1 = 70;
+	H1 = 10;
+	D1 = 40;
+
+	// меньшая часть
+	W = w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13+w14;
+
+	// часть коллиматора
+	difference()
+	{
+		translate([0, -L, 0])
+		cube([W, L, DWB+H]);
+
+		translate([-g, -L+DW, DW])
+		cube([W + 2*g, L-2*DW, DWB+H-DW+g]);
+	}
+
+	// направляющие
+	union()
+	{
+		DW1 = DW/2-0.1;
+		DW2 = DW/2+0.1;
+		
+		translate([DW, -DW   , DWB+H])    cube([W-2*DW, DW1, 1.0]);
+		translate([DW, -L+DW2, DWB+H]) cube([W-2*DW, DW1, 1.0]);
+	}
+
+	// перегородки
+	union()
+	{
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w1, L, DWB+H]);
+
+			translate([-g, -L/2, DWB+H])
+			rotate([0, 90, 0])
+			scale([lh_scale_x, 1, 1])
+			cylinder(d = l1, h = w1+2*g);
+
+			translate([3*w1/4, -L/2, DWB+H])
+			rotate([0, 90, 0])
+			scale([lh_scale_x, 1, 1])
+			cylinder(d1 = l1, d2 = l2, h = w1/4+g);
+		}
+
+		translate([w1, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w2, L, DWB+H]);
+
+			// translate([-g, -L/2, DWB+H])
+			// rotate([0, 90, 0])
+			// scale([lh_scale_x, 1, 1])
+			// cylinder(d = l2, h = w2+2*g);
+
+			translate([w2/2, -L/2, DWB+H])
+			rotate([45, 0, 0])
+			cube([w2+2*g, l2, l2], center = true);
+		}
+
+		translate([w1+w2, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w3, L, DWB+H]);
+
+			translate([-g, -L/2, DWB+H])
+			rotate([0, 90, 0])
+			scale([lh_scale_x, 1, 1])
+			cylinder(d = l3, h = w3+2*g);
+		}
+
+		translate([w1+w2+w3+w4, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w5, L, DWB+H]);
+
+			translate([-g, -L/2-l5/2, DWB+H-l5/2])
+			cube([w5+2*g, l5, l5/2+g]);
+		}
+
+		translate([w1+w2+w3+w4+w5, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w6, L, DWB+H]);
+
+			translate([-g, -L/2-l6/2, DWB+H-l6/2])
+			cube([w6+2*g, l6, l6/2+g]);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w7, L, DWB+H]);
+
+			translate([-g, -L/2-l7/2, DWB+H-l7/2])
+			cube([w7+2*g, l7, l7/2+g]);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w9, L, DWB+H]);
+
+			translate([-g, -L/2, DWB+H])
+			rotate([0, 90, 0])
+			scale([lh_scale_x, 1, 1])
+			cylinder(d = l9, h = w9+2*g);
+		}
+		
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w10, L, DWB+H]);
+
+			// translate([-g, -L/2, DWB+H])
+			// rotate([0, 90, 0])
+			// scale([lh_scale_x, 1, 1])
+			// cylinder(d = l10, h = w10+2*g);
+
+			translate([w10/2, -L/2, DWB+H])
+			rotate([45, 0, 0])
+			cube([w10+2*g, l10, l10], center = true);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w11, L, DWB+H]);
+
+			translate([-g, -L/2, DWB+H])
+			rotate([0, 90, 0])
+			scale([lh_scale_x, 1, 1])
+			cylinder(d = l11, h = w11+2*g);
+
+			translate([-g, -L/2, DWB+H])
+			rotate([0, 90, 0])
+			scale([lh_scale_x, 1, 1])
+			cylinder(d2 = l11, d1 = l10, h = w1/4+g);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12, 0, 0])
+		difference()
+		{
+			translate([0, -L, 0])
+			cube([w13, L, DWB+H]);
+
+			translate([-g, -L/2, DWB+H])
+			rotate([0, 90, 0])
+			scale([lh_scale_x, 1, 1])
+			cylinder(d = l13, h = w13+2*g);
+		}
+
+		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13, 0, 0])
+		union()
+		{
+			w = w14/6;
+			translate([w, 0, 0])
+			intersection()
+			{
+				translate([0, -L, 0])
+				cube([w, L, DWB+H]);
+
+				union()
+				{
+					translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+					rotate([45, 0, 0])
+					cube([w, 2*L, 2], center = true);
+
+					translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+					rotate([-45, 0, 0])
+					cube([w, 2*L, 2], center = true);
+				}
+			}
+
+			translate([3*w, 0, 0])
+			intersection()
+			{
+				translate([0, -L, 0])
+				cube([w, L, DWB+H]);
+
+				union()
+				{
+					translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+					rotate([45, 0, 0])
+					cube([w, 2*L, 2], center = true);
+
+					translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+					rotate([-45, 0, 0])
+					cube([w, 2*L, 2], center = true);
+				}
+			}
+
+			translate([5*w, 0, 0])
+			intersection()
+			{
+				translate([0, -L, 0])
+				cube([w, L, DWB+H]);
+
+				union()
+				{
+					translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+					rotate([45, 0, 0])
+					cube([w, 2*L, 2], center = true);
+
+					translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+					rotate([-45, 0, 0])
+					cube([w, 2*L, 2], center = true);
+				}
+			}
+		}
+	}
+}
+
+*translate([0, -0.5, 0])
+laser_holder1();
+
+module laser_holder2()
 {
 	DW = 2;    // толщина стенок
 	L = 20.0;
 	H = L/2;
+	DWB = 0.0; // нижняя стенка
 
 	Fl = 24.5; // фокус линзы
 	Dl = 12.7; // диаметр линзы
@@ -1325,212 +1417,7 @@ module laser_holder1()
 	w11 = w1;
 	w12 = 5.0;
 	w13 = 1.0;
-	w14 = 50.0;
-
-	l1 = Dl - 1.0;
-	l2 = Dl + 0.1;
-	l3 = l1;
-	l4 = L-2*DW;
-	l5 = 5.0;
-	l6 = 10.0;
-	l7 = l5;
-	l8 = l4;
-	l9 = l3;
-	l10 = l2;
-	l11 = l1;
-	l12 = l4;
-	l13 = Di1;
-	l14 = Di0+0.7;
-
-	// большая части
-	W1 = 70;
-	L1 = 70;
-	H1 = 10;
-	D1 = 40;
-
-	// меньшая часть
-	W = w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13+w14;
-
-	// часть коллиматора
-	difference()
-	{
-		translate([0, -L, 0])
-		cube([W, L, H]);
-
-		translate([-g, -L+DW, DW])
-		cube([W + 2*g, L-2*DW, H-DW+g]);
-	}
-
-	// направляющие
-	union()
-	{
-		DW1 = DW/2-0.1;
-		DW2 = DW/2+0.1;
-		
-		translate([DW, -DW, H])    cube([W-2*DW, DW1, 1.0]);
-		translate([DW, -L+DW2, H]) cube([W-2*DW, DW1, 1.0]);
-	}
-
-	// перегородки
-	union()
-	{
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w1, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l1, h = w1+2*g);
-
-			translate([w1/2, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d1 = l1, d2 = l2, h = w1/2+g);
-		}
-
-		translate([w1, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w2, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l2, h = w2+2*g);
-		}
-
-		translate([w1+w2, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w3, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l3, h = w3+2*g);
-		}
-
-		translate([w1+w2+w3+w4, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w5, L, H]);
-
-			translate([-g, -L/2-l5/2, H-l5/2])
-			cube([w5+2*g, l5, l5/2+g]);
-		}
-
-		translate([w1+w2+w3+w4+w5, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w6, L, H]);
-
-			translate([-g, -L/2-l6/2, H-l6/2])
-			cube([w6+2*g, l6, l6/2+g]);
-		}
-
-		translate([w1+w2+w3+w4+w5+w6, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w7, L, H]);
-
-			translate([-g, -L/2-l7/2, H-l7/2])
-			cube([w7+2*g, l7, l7/2+g]);
-		}
-
-		translate([w1+w2+w3+w4+w5+w6+w7+w8, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w9, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l9, h = w9+2*g);
-		}
-		
-		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w10, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l10, h = w10+2*g);
-		}
-
-		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w11, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l11, h = w11+2*g);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d2 = l11, d1 = l10, h = w1/2+g);
-		}
-
-		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w13, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l13, h = w13+2*g);
-		}
-
-		translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13, 0, 0])
-		difference()
-		{
-			translate([0, -L, 0])
-			cube([w14, L, H]);
-
-			translate([-g, -L/2, H])
-			rotate([0, 90, 0])
-			cylinder(d = l14, h = w14+2*g);
-		}
-	}
-}
-
-laser_holder1();
-
-module laser_holder2()
-{
-	DW = 2;    // толщина стенок
-	L = 20.0;
-	H = L/2;
-
-	Fl = 24.5; // фокус линзы
-	Dl = 12.7; // диаметр линзы
-	Al = 30;   // угол для линзы
-	Hl = 2.1;  // толщина линзы на краю
-
-	Di0 = 12.0; // внешний диаметр лазеры
-	Di1 = 10.0; // диаметр под линзу
-
-	w1 = 2.0;
-	w2 = Hl + 0.2;
-	w3 = 1.0;
-	w5 = 1.0;
-	w4 = Fl - w3 - w2/2 - w5;
-	w6 = 0.2;
-	w7 = w5;
-	w8 = w4;
-	w9 = w1;
-	w10 = w2;
-	w11 = w3;
-	w12 = 5.0;
-	w13 = 1.0;
-	w14 = 50.0;
+	w14 = 30.0;
 
 	l1 = Dl - 1.0;
 	l2 = Dl + 0.1;
@@ -1545,7 +1432,7 @@ module laser_holder2()
 	l11 = l3;
 	l12 = l4;
 	l13 = Di1;
-	l14 = Di0+0.7;
+	l14 = Di0+0.2;
 
 	// большая части
 	W1 = 70;
@@ -1565,10 +1452,10 @@ module laser_holder2()
 			difference()
 			{
 				translate([0, -L, 0])
-				cube([W, L, H]);
+				cube([W, L, DWB+H]);
 
 				translate([-g, -L+DW, DW])
-				cube([W + 2*g, L-2*DW, H-DW+g]);
+				cube([W + 2*g, L-2*DW, DWB+H-DW+g]);
 			}
 
 			// перегородки
@@ -1577,14 +1464,16 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w1, L, H]);
+					cube([w1, L, DWB+H]);
 
-					translate([-g, -L/2, H])
+					translate([-g, -L/2, DWB+H])
 					rotate([0, 90, 0])
+					scale([lh_scale_x, 1, 1])
 					cylinder(d = l1, h = w1+2*g);
 
-					translate([w1/2, -L/2, H])
+					translate([w1/2, -L/2, DWB+H])
 					rotate([0, 90, 0])
+					scale([lh_scale_x, 1, 1])
 					cylinder(d1 = l1, d2 = l2, h = w1/2+g);
 				}
 
@@ -1592,21 +1481,27 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w2, L, H]);
+					cube([w2, L, DWB+H]);
 
-					translate([-g, -L/2, H])
-					rotate([0, 90, 0])
-					cylinder(d = l2, h = w2+2*g);
+					// translate([-g, -L/2, DWB+H])
+					// rotate([0, 90, 0])
+					// scale([lh_scale_x, 1, 1])
+					// cylinder(d = l2, h = w2+2*g);
+
+					translate([w2/2, -L/2, DWB+H])
+					rotate([45, 0, 0])
+					cube([w2+2*g, l2, l2], center = true);
 				}
 
 				translate([w1+w2, 0, 0])
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w3, L, H]);
+					cube([w3, L, DWB+H]);
 
-					translate([-g, -L/2, H])
+					translate([-g, -L/2, DWB+H])
 					rotate([0, 90, 0])
+					scale([lh_scale_x, 1, 1])
 					cylinder(d = l3, h = w3+2*g);
 				}
 
@@ -1614,9 +1509,9 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w5, L, H]);
+					cube([w5, L, DWB+H]);
 
-					translate([-g, -L/2-l5/2, H-l5/2])
+					translate([-g, -L/2-l5/2, DWB+H-l5/2])
 					cube([w5+2*g, l5, l5/2+g]);
 				}
 
@@ -1624,9 +1519,9 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w6, L, H]);
+					cube([w6, L, DWB+H]);
 
-					translate([-g, -L/2-l6/2, H-l6/2])
+					translate([-g, -L/2-l6/2, DWB+H-l6/2])
 					cube([w6+2*g, l6, l6/2+g]);
 				}
 
@@ -1634,9 +1529,9 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w7, L, H]);
+					cube([w7, L, DWB+H]);
 
-					translate([-g, -L/2-l7/2, H-l7/2])
+					translate([-g, -L/2-l7/2, DWB+H-l7/2])
 					cube([w7+2*g, l7, l7/2+g]);
 				}
 
@@ -1644,10 +1539,11 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w9, L, H]);
+					cube([w9, L, DWB+H]);
 
-					translate([-g, -L/2, H])
+					translate([-g, -L/2, DWB+H])
 					rotate([0, 90, 0])
+					scale([lh_scale_x, 1, 1])
 					cylinder(d = l9, h = w9+2*g);
 				}
 				
@@ -1655,25 +1551,32 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w10, L, H]);
+					cube([w10, L, DWB+H]);
 
-					translate([-g, -L/2, H])
-					rotate([0, 90, 0])
-					cylinder(d = l10, h = w10+2*g);
+					// translate([-g, -L/2, DWB+H])
+					// rotate([0, 90, 0])
+					// scale([lh_scale_x, 1, 1])
+					// cylinder(d = l10, h = w10+2*g);
+
+					translate([w10/2, -L/2, DWB+H])
+					rotate([45, 0, 0])
+					cube([w10+2*g, l10, l10], center = true);
 				}
 
 				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10, 0, 0])
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w11, L, H]);
+					cube([w11, L, DWB+H]);
 
-					translate([-g, -L/2, H])
+					translate([-g, -L/2, DWB+H])
 					rotate([0, 90, 0])
+					scale([lh_scale_x, 1, 1])
 					cylinder(d = l11, h = w11+2*g);
 
-					translate([-g, -L/2, H])
+					translate([-g, -L/2, DWB+H])
 					rotate([0, 90, 0])
+					scale([lh_scale_x, 1, 1])
 					cylinder(d2 = l11, d1 = l10, h = w1/2+g);
 				}
 
@@ -1681,27 +1584,76 @@ module laser_holder2()
 				difference()
 				{
 					translate([0, -L, 0])
-					cube([w13, L, H]);
+					cube([w13, L, DWB+H]);
 
-					translate([-g, -L/2, H])
+					translate([-g, -L/2, DWB+H])
 					rotate([0, 90, 0])
+					scale([lh_scale_x, 1, 1])
 					cylinder(d = l13, h = w13+2*g);
 				}
 
 				translate([w1+w2+w3+w4+w5+w6+w7+w8+w9+w10+w11+w12+w13, 0, 0])
-				difference()
+				union()
 				{
-					translate([0, -L, 0])
-					cube([w14, L, H]);
+					w = w14/6;
+					translate([w, 0, 0])
+					intersection()
+					{
+						translate([0, -L, 0])
+						cube([w, L, DWB+H]);
 
-					translate([-g, -L/2, H])
-					rotate([0, 90, 0])
-					cylinder(d = l14, h = w14+2*g);
+						union()
+						{
+							translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+							rotate([45, 0, 0])
+							cube([w, 2*L, 2], center = true);
+
+							translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+							rotate([-45, 0, 0])
+							cube([w, 2*L, 2], center = true);
+						}
+					}
+
+					translate([3*w, 0, 0])
+					intersection()
+					{
+						translate([0, -L, 0])
+						cube([w, L, DWB+H]);
+
+						union()
+						{
+							translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+							rotate([45, 0, 0])
+							cube([w, 2*L, 2], center = true);
+
+							translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+							rotate([-45, 0, 0])
+							cube([w, 2*L, 2], center = true);
+						}
+					}
+
+					translate([5*w, 0, 0])
+					intersection()
+					{
+						translate([0, -L, 0])
+						cube([w, L, DWB+H]);
+
+						union()
+						{
+							translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+							rotate([45, 0, 0])
+							cube([w, 2*L, 2], center = true);
+
+							translate([w/2, -L/2, DWB+H-(l14+2)/sqrt(2)])
+							rotate([-45, 0, 0])
+							cube([w, 2*L, 2], center = true);
+						}
+					}
 				}
 			}
 		}
 
-		translate([0, 0, -1.1])
+		translate([0, 0, DWB-1.1])
 		union()
 		{
 			DW1 = DW/2+0.1;
@@ -1713,7 +1665,7 @@ module laser_holder2()
 	}
 }
 
-translate([0, 1, 0])
+*translate([0, 0.5, 0])
 laser_holder2();
 
 // ==================== VIEW ====================
@@ -1732,17 +1684,6 @@ module view()
 		labyr2();
 
 		fh_holder();
-
-		translate([0, 0, 10])
-		rotate([0, 0, 45])
-		fiber_sma_holder();
-
-		translate([0, 0, -11.4])
-		rotate([180, 0, 0])
-		lens_holder1();
-
-		translate([0, 0, -15.4])
-		lens_holder2();
 	}
 
 	translate([0, 0, -T_H/2]) table();
@@ -1779,11 +1720,3 @@ module view()
 }
 
 *view();
-
-*probe_holder();
-*cartridge1();
-*cartridge2();
-
-*fh_holder();
-*fiber_fc_holder();
-
